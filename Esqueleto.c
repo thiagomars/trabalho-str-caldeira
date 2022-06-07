@@ -57,6 +57,12 @@ void thread_grava_temp_resp(void){
 
 */
 
+/* Controlar nivel da caldeira */
+void thread_controle_nivel(){
+	
+	
+}
+
 void main( int argc, char *argv[]) {
     //ref_putT(29.0);
     //cria_socket(argv[1], atoi(argv[2]) ); 
