@@ -20,8 +20,17 @@ void sensor_put_nivel( double niv) {
 	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
 }
 
-//verificar 
+
 double sensor_get_nivel(void) {
+	double aux; 
+	pthread_mutex_lock(&exclusao_mutua); 
+	aux = s_nivel; //Armazena localmente o valor da variável global nível
+	pthread_mutex_unlock(&exclusao_mutua); 
+	return aux; //Retorna o valor do nível
+}
+
+//verificar 
+/*double sensor_get_nivel(void) {
 	double aux; 
 	pthread_mutex_lock(&exclusao_mutua); 
 	
@@ -43,7 +52,7 @@ double sensor_get_nivel(void) {
 	pthread_mutex_unlock(&exclusao_mutua); 
 	return aux; //Retorna o valor do nível
 }
-
+*/
 
 /* Thread fica bloqueada até o valor do sensor chegar em limite */ 
 void sensor_alarmeT( double limite) {
