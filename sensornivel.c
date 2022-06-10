@@ -23,7 +23,22 @@ void sensor_put_nivel( double niv) {
 double sensor_get_nivel(void) {
 	double aux; 
 	pthread_mutex_lock(&exclusao_mutua); 
-	aux = s_nivel; //Armazena localmente o valor da variável global nível
+	
+	if(strncmp(s, "Ta", 1) == 0)
+	aux = sens_Ta; //Armazena localmente o valor da variável global temperatura do ar
+	
+	else if (strncmp(s, "T", 1) == 0)
+	aux = sens_T; //Armazena localmente o valor da variável global temperatura da agua no interior do recipiente
+	
+	else if (strncmp(s, "Ti", 1) == 0)
+	aux = sens_Ti; //Armazena localmente o valor da variável global temperatura da agua que entra no recipiente
+	
+	else if (strncmp(s, "No", 1) == 0)
+	aux = sens_No; //Armazena localmente o valor da variável global fluxo de agua de saida do recipiente
+	
+	else if (strncmp(s, "H", 1) == 0)
+	aux = sens_H; //Armazena localmente o valor da variável global altura da coluna de agua dentro do recipiente
+		
 	pthread_mutex_unlock(&exclusao_mutua); 
 	return aux; //Retorna o valor do nível
 }
