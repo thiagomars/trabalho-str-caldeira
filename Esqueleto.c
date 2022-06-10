@@ -35,6 +35,11 @@ void thread_mostra_status (void){
 		printf("---------------------------------------\n");
 		printf("Temperatura (T)--> %.4lf\n", temperatura);
 		printf("Nivel (H)--> %.4lf\n", nivel);
+		
+		printf("Fluxo (No)--> %.4lf\n", fluxo);
+		printf("Temperatura Ambiente (Ta)--> %.4lf\n", temp_amb);
+		printf("Temperatura Entrada (Ti)--> %.4lf\n", temp_ent);
+		
 		printf("---------------------------------------\n");
 		libera_tela();//Libera os recursos 
 		sleep(1); //Executada a cada 1 segundo
