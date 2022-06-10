@@ -21,10 +21,15 @@
 
 #define NSEC_PER_SEC (1000000000)
 void thread_mostra_status (void){
-	double temperatura, nivel;
+	double temperatura, nivel, fluxo, temp_amb, temp_entrada;
 	while(1){
 		temperatura = sensor_get_temperatura();
 		nivel = sensor_get_nivel();
+		
+		fluxo = sensor_get_fluxo();
+		temp_amb = sensor_get_temperatura_ambiente();
+		temp_ent = sensor_get_temperatura_entrada();
+		
 		aloca_tela();//Permite acesso exclusivo dos recursos para a tela do computador
 		system("tput reset"); //limpa tela
 		printf("---------------------------------------\n");
