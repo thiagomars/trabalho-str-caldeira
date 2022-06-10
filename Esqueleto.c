@@ -59,15 +59,22 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 			
 	}		
 }
-/*
-void thread_alarme (void){//aciona alamer
+
+//aciona alarme na temperatura definida 
+void thread_alarme (void){
 	
 	while(1){
-		
+		sensor_alarmeT(30); //Definindo a temperatura
+		aloca_tela();
+		printf("ALARME, TEMPERATURA LIMITE ATINGIDA !!!\N");
+		libera_tela();
+		sleep(1);
+	
 	}
 		
 }
 
+/*
 void thread_controle_temperatura (void){
 	while(1){	
        	
