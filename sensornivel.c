@@ -20,6 +20,7 @@ void sensor_put_nivel( double niv) {
 	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
 }
 
+//verificar 
 double sensor_get_nivel(void) {
 	double aux; 
 	pthread_mutex_lock(&exclusao_mutua); 
