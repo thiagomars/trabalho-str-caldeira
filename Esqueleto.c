@@ -91,7 +91,93 @@ void thread_grava_temp_resp(void){
 
 /* Controlar nivel da caldeira */
 void thread_controle_nivel(){
+struct timespec t;
+	long int periodo = 70e6; 	// 70ms
 	
+	// Le a hora atual, coloca em t
+	clock_gettime(CLOCK_MONOTONIC ,&t);
+
+	// Tarefa periodica iniciará em 1 segundo
+	t.tv_sec++;
+
+	while(1) {
+		// Espera ateh inicio do proximo periodo
+		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
+
+                // Realiza seu trabalho
+                //variaveis de comporta de entrada
+                double atu_q, atu_ni, atu_na, atu_nf;
+                
+                //verificar se o nivel está baixo -> Hmin = 0,1m e Hmax = 3,0m
+                if(sensor_get_nivel() < HREF){
+                	//Verificar a temperatura
+                	if(TEMP_REF < sensor_get_temperatura()){ //temperatura alta
+                		atu_q = 0;
+                		atu_ni = 100;
+                		atu_na = 0;
+                		atu_nf = 0;
+			} else if(TEMP_REF > sensor_get_temperatura()){ //temperatura baixa
+				atu_q = 0;
+                		atu_ni = 100;
+                		atu_na = 10;
+                		atu_nf = 100000;
+			} else if(TEMP_REF == sensor_get_temperatura()){ //temperatura ideal
+				atu_q = 100;
+                		atu_ni = 100;
+                		atu_na = 0;
+                		atu_nf = 0;
+			}
+                }
+                
+                //verificar se o nivel está alto -> Hmin = 0,1m e Hmax = 3,0m
+                if(sensor_get_nivel() > HREF){
+                	//Verificar a temperatura
+                	if(TEMP_REF < sensor_get_temperatura()){ //temperatura alta
+                		atu_q = 0;
+                		atu_ni = 0;
+                		atu_na = 0;
+                		atu_nf = 100;
+			} else if(TEMP_REF > sensor_get_temperatura()){ //temperatura baixa
+				atu_q = 100000;
+                		atu_ni = 0;
+                		atu_na = 10;
+                		atu_nf = 100;
+			} else if(TEMP_REF == sensor_get_temperatura()){ //temperatura ideal
+				atu_q = 100;
+                		atu_ni = 0;
+                		atu_na = 0;
+                		atu_nf = 100;
+			}
+                }
+                
+		
+		// enviar os valores para os atuadores
+		
+		// atuador do aquecedor
+		sprintf(msg_enviada, "aq-%lf", atu_q);
+		msg_socket(msg_enviada);
+                
+		// atuador de entrada de agua ambiente
+		sprintf(msg_enviada, "ani%lf", atu_ni);
+		msg_socket(msg_enviada);
+		
+		// atuador de entrada de agua aquecida 80 graus
+		sprintf(msg_enviada, "ana%lf", atu_na);
+		msg_socket(msg_enviada);
+
+		// atuador de saída de agua do esgoto controlado
+		sprintf(msg_enviada, "anf%lf", atu_nf);
+		msg_socket(msg_enviada);
+
+		printf("Passou um periodo !\n");	
+
+		// Calcula inicio do proximo periodo
+		t.tv_nsec += periodo;
+		while (t.tv_nsec >= NSEC_PER_SEC) {
+			t.tv_nsec -= NSEC_PER_SEC;
+			t.tv_sec++;
+		}
+	}
 	
 }
 
