@@ -92,9 +92,33 @@ void thread_alarme (void){
 
 /*
 void thread_controle_temperatura (void){
+
+	struct timespec t, t_fim;
+	long periodo = 50e6;  // 50ms
+	long temp_resp; // momento em que inicia até o fim
+
+	// leitura da hora atual
+  	clock_gettime(CLOCK_MONOTONIC, &t);
+
 	while(1){	
-		
-		//bufduplo_insereLeitura();
+		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
+
+		//-------------->Códigos para controle de Temperatura aqui<------------------
+
+	// leitura da hora atual
+    clock_gettime(CLOCK_MONOTONIC, &t_fim);
+
+    // calcula o tempo de resposta observado
+    temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
+
+    bufduplo_insere_leitura(atraso_fim);
+
+    // calcula inicio do prox periodo
+    t.tv_nsec += periodo;
+    while (t.tv_nsec >= NSEC_PER_SEC) {
+      t.tv_nsec -= NSEC_PER_SEC;
+      t.tv_sec++;
+    }	
 	}
 }
 
@@ -117,6 +141,41 @@ void thread_grava_temp_resp(void){
 	}
 	fclose(dados_f);	
 }
+
+void thread_grava_sensor_nivel(void){
+    FILE* dados_f;
+	dados_f = fopen("dados_nivel.txt", "w");
+	if(dados_f == NULL){
+		printf("Erro, nao foi possivel abrir o arquivo\n");
+		exit(1);
+	}
+
+	for( int i=0; i<N_AMOSTRAS; i++){
+		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
+		fprintf(dados_f, "%4ld\n", temp_exec[i]);
+	}
+	}
+	fclose(dados_f);	
+}
+
+void thread_grava_sensor_temperatura(void){
+    FILE* dados_f;
+	dados_f = fopen("dados_temperatura.txt", "w");
+	if(dados_f == NULL){
+		printf("Erro, nao foi possivel abrir o arquivo\n");
+		exit(1);
+	}
+
+	for( int i=0; i<N_AMOSTRAS; i++){
+		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
+		fprintf(dados_f, "%4ld\n", temp_exec[i]);
+	}
+	}
+	fclose(dados_f);	
+}
+
+
+
 
 
 /* Controlar nivel da caldeira */
@@ -220,50 +279,21 @@ void main( int argc, char *argv[]) {
     //ref_putT(29.0);
     cria_socket(argv[1], atoi(argv[2]) ); 
 
-	pthread_t t1, t2, t3, t4, t5;
+	pthread_t t1, t2, t3, t4, t5, t6, t7;
     //serão definidos 5 threads
     pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
     pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
     //pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
     //pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
     pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
+	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
+	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
     
-	pthread_join( t1, NULL);
-	pthread_join( t2, NULL);
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
 	//pthread_join( t3, NULL);
-
-	// Le a hora atual, coloca em t
-	clock_gettime(CLOCK_MONOTONIC ,&t);
-
-	while(amostra < N_AMOSTRAS) {
-		// Espera ate inicio do proximo periodo
-		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
-			
-		// Le a hora atual, coloca em t_inicio
-		clock_gettime(CLOCK_MONOTONIC ,&t_inicio);
-		
-		//Tarefa
-		//pthread_join( t4, NULL);
-		
-		// Le a hora atual, coloca em t_fim
-		clock_gettime(CLOCK_MONOTONIC ,&t_fim);
-
-		// Calcula o tempo de execuÃ§Ã£o observado em microsegundos
-		temp_exec[amostra++] = 1000000*(t_fim.tv_sec - t_inicio.tv_sec)   +   (t_fim.tv_nsec - t_inicio.tv_nsec)/1000;  	
-
-		// Calcula inicio do proximo periodo
-		t.tv_nsec += periodo;
-	while (t.tv_nsec >= NSEC_PER_SEC) {
-		t.tv_nsec -= NSEC_PER_SEC;
-		t.tv_sec++;
-	}
-
-	for( int i=0; i<N_AMOSTRAS; i++){
-		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
-		fprintf(dados_f, "%4ld\n", temp_exec[i]);
-		}
-	
-	fclose(dados_f);
-	pthread_join( t5, NULL);
-	    
+	//pthread_join( t4, NULL);
+	pthread_join(t5, NULL);
+	pthread_join(t6, NULL);
+	pthread_join(t7, NULL);	    
 }

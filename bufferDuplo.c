@@ -36,7 +36,7 @@ void bufduplo_insereLeitura( long leitura) {
 		emuso = (emuso + 1)% 2; 
 		prox_insercao = 0; 
 		pthread_cond_signal( &buffer_cheio); 
-	} 
+	}  
 	pthread_mutex_unlock( &exclusao_mutua);
 }
 
