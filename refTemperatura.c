@@ -12,6 +12,7 @@ void put_refTemp(double ref) {
   pthread_mutex_unlock(&exclusao_mutua);
 }
 
+/*Chama qualquer thread que precisa do valor lido do sensor */ 
 double get_refTemp() {
   double aux;
 
