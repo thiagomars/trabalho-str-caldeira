@@ -5,6 +5,7 @@ static pthread_mutex_t exclusao_mutua = PTHREAD_MUTEX_INITIALIZER;
 static double ref_ent = 0;
 
 
+/*Chama a thread que le o sensor e fornece o valor lido */
 void put_refTemp(double ref) {
   pthread_mutex_lock(&exclusao_mutua);
   ref_ent = ref;
