@@ -5,14 +5,14 @@ static pthread_mutex_t exclusao_mutua = PTHREAD_MUTEX_INITIALIZER;
 static double ref_ent = 0;
 
 /*Chama a thread que le o sensor e fornece o valor lido */
-void put_ref_niv(double ref) {
+void put_refNivel(double ref) {
   pthread_mutex_lock(&exclusao_mutua);
   ref_ent = ref;
   pthread_mutex_unlock(&exclusao_mutua);
 }
 
 /*Chama qualquer thread que precisa do valor lido do sensor */ 
-double get_ref_niv() {
+double get_refNivel() {
   double aux;
 
   pthread_mutex_lock(&exclusao_mutua);
