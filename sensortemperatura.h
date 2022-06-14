@@ -5,7 +5,7 @@
 void sensor_put_temperatura( double temp);
 double sensor_get_temperatura(void);
 
-//void sensor_alarmeT(double limite);
+void sensor_alarmeT(double limite);
 
 #endif
 
