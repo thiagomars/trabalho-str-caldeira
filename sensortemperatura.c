@@ -29,7 +29,7 @@ double sensor_get_temperatura(void) {
 
 
 
-/* Thread fica bloqueada até o valor do sensor chegar em limite 
+//Thread fica bloqueada até o valor do sensor chegar em limite 
 void sensor_alarmeT( double limite) {
 	pthread_mutex_lock( &exclusao_mutua); 
 	limite_atual = limite; 
@@ -38,5 +38,4 @@ void sensor_alarmeT( double limite) {
 	}
 	limite_atual = HUGE_VAL; 
 	pthread_mutex_unlock( &exclusao_mutua); 
-}
-*/ 
+} 
