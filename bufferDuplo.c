@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define TAMBUF 200 
+#define TAMBUF 100 
 
 //vetor com o tamanho de Buffer definido acima
 static long buffer_0[TAMBUF]; 
@@ -55,5 +55,5 @@ long * bufduplo_esperaBufferCheio( void) {
 }
 int tamBuf(void){
 	
-	return (int )TAMBUF;
+	return (int)TAMBUF;
 }
