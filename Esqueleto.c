@@ -111,7 +111,7 @@ void thread_controle_temperatura (void){
     // calcula o tempo de resposta observado
     temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
 
-    bufduplo_insere_leitura(atraso_fim);
+    bufduplo_insere_leitura(temp_resp);
 
     // calcula inicio do prox periodo
     t.tv_nsec += periodo;
@@ -132,13 +132,26 @@ void thread_grava_temp_resp(void){
 		exit(1);
 	}
 
-	while(1){
-		double *buf  = bufduplo_esperaBufferCheio();
-		for(int i=0; i<100; i++){
-			fprintf(dados_f, "%lf\n", buf[i]);
-			fflush(dados_f);
-	}
-	}
+	int amostras = 0;
+	int tambuffer = tamBuf();
+
+	while(amostras++ <= N_AMOSTRAS / tambuffer) {
+    //Espera até o buffer encher para descarregar no arquivo
+    long* buf = bufduplo_espera_buffer_cheio();
+
+    int n2 = tamBuf();
+    int tam = 0;
+
+    while (tam < n2)
+      fprintf(dados_f, "%4ld\n", buf[tam++]);
+
+    fflush(dados_f);
+
+    aloca_tela();
+    printf("Gravando arquivo...\n");
+    libera_tela();
+  }
+
 	fclose(dados_f);	
 }
 
@@ -154,7 +167,6 @@ void thread_grava_sensor_nivel(void){
 		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
 		fprintf(dados_f, "%4ld\n", temp_exec[i]);
 	}
-	}
 	fclose(dados_f);	
 }
 
@@ -169,7 +181,6 @@ void thread_grava_sensor_temperatura(void){
 	for( int i=0; i<N_AMOSTRAS; i++){
 		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
 		fprintf(dados_f, "%4ld\n", temp_exec[i]);
-	}
 	}
 	fclose(dados_f);	
 }
