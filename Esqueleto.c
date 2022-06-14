@@ -289,6 +289,26 @@ void main( int argc, char *argv[]) {
 
     //ref_putT(29.0);
     cria_socket(argv[1], atoi(argv[2]) ); 
+	
+	double temp, nivel;
+	
+	printf("Digite um valor REFERENCIA para a Temperatura: \n");
+	scanf(" ");
+	scanf("%lf", &temp);
+	
+	while(temp > 30.0){
+		printf("Digite um valor de referência menor que 30 graus: \n");
+		scanf(" ");
+		scanf("%lf",&temp);
+			
+    	}
+	
+	printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
+	scanf(" ");
+	scanf("%lf", &nivel);
+	
+	
+	
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7;
     //serão definidos 5 threads
