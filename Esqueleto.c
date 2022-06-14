@@ -18,6 +18,11 @@
 #include "refTemperatura.h"//usar a referencia da temperatura
 #include "refNivel.h"
 //#include "bufduplo.h"
+#include "atuador_aquecedor.h"
+#include "atuador_fluxo_aquecida.h"
+#include "atuador_fluxo_entrada.h"
+#include "atuador_fluxo_saida.h"
+
 
 //Definindo Variáveis necessárias para as medições de tempo
 #define	NSEC_PER_SEC    (1000000000) 	// Numero de nanosegundos em um segundo
@@ -321,7 +326,7 @@ void main( int argc, char *argv[]) {
 	put_refNivel(nivel);
 	
 
-	pthread_t t1, t2, t3, t4, t5, t6, t7;
+	pthread_t t1, t2, t3, t4, t5, t6, t7, t8;
     //serão definidos 5 threads
     pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
     pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
@@ -330,6 +335,7 @@ void main( int argc, char *argv[]) {
     pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
 	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
 	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
+	pthread_create(&t8, NULL, (void*) thread_controle_nivel, NULL);
     
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
@@ -338,4 +344,5 @@ void main( int argc, char *argv[]) {
 	pthread_join(t5, NULL);
 	pthread_join(t6, NULL);
 	pthread_join(t7, NULL);	    
+	pthread_join(t8, NULL);
 }
