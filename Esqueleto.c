@@ -43,7 +43,7 @@ void thread_mostra_status (void){
 		
 		fluxo = sensor_get_fluxo();
 		temp_amb = sensor_get_temperatura_ambiente();
-		temp_ent = sensor_get_temperatura_entrada();
+		temp_entrada = sensor_get_temperatura_entrada();
 		
 		aloca_tela();//Permite acesso exclusivo dos recursos para a tela do computador
 		system("tput reset"); //limpa tela
@@ -53,7 +53,7 @@ void thread_mostra_status (void){
 		
 		printf("Fluxo (No)--> %.4lf\n", fluxo);
 		printf("Temperatura Ambiente (Ta)--> %.4lf\n", temp_amb);
-		printf("Temperatura Entrada (Ti)--> %.4lf\n", temp_ent);
+		printf("Temperatura Entrada (Ti)--> %.4lf\n", temp_entrada);
 		
 		printf("---------------------------------------\n");
 		libera_tela();//Libera os recursos 
