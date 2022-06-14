@@ -8,6 +8,7 @@ static pthread_mutex_t exclusao_mutua = PTHREAD_MUTEX_INITIALIZER; //Variável d
 static pthread_cond_t alarme = PTHREAD_COND_INITIALIZER; 
 //Variáveis globas para amezanar os valores dos sensores, só são acessado por esse modulo do monitor sensor
 static double s_temp = 0;
+static double limite_atual = HUGE_VAL;
 
 /* Chamado pela thread que le o sensor e disponibiliza aqui o valor lido */
 void sensor_put_temperatura( double temp) {
