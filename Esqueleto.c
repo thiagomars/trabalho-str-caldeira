@@ -325,7 +325,7 @@ void main( int argc, char *argv[]) {
     //serão definidos 5 threads
     pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
     pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
-    //pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
+    pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
     //pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
     pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
 	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
@@ -333,7 +333,7 @@ void main( int argc, char *argv[]) {
     
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
-	//pthread_join( t3, NULL);
+	pthread_join( t3, NULL);
 	//pthread_join( t4, NULL);
 	pthread_join(t5, NULL);
 	pthread_join(t6, NULL);
