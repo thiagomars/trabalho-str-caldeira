@@ -94,7 +94,7 @@ void thread_alarme (void){
 	while(1){
 		sensor_alarmeT(30); //Definindo a temperatura
 		aloca_tela();
-		printf("ALARME, TEMPERATURA LIMITE ATINGIDA !!!\N");
+		printf("ALARME, TEMPERATURA LIMITE ATINGIDA !!!\n");
 		libera_tela();
 		sleep(1);
 	
