@@ -55,13 +55,5 @@ double sensor_get_nivel(void) {
 */
 
 /* Thread fica bloqueada até o valor do sensor chegar em limite */ 
-void sensor_alarmeT( double limite) {
-	pthread_mutex_lock(&exclusao_mutua); 
-	limite_atual = limite; 
-	while( s_temp < limite_atual){ 
-		pthread_cond_wait( &alarme, &exclusao_mutua); 
-	}
-	limite_atual = HUGE_VAL; 
-	pthread_mutex_unlock( &exclusao_mutua); 
-}
+
 
