@@ -15,7 +15,8 @@
 #include "bufferDuplo.h"
 //Inclusão do monitor que acessa o canal de comunicação do simulador
 #include "socket.h"
-//#include "referenciaT.h"//usar a referencia da temperatura
+#include "refTemperatura.h"//usar a referencia da temperatura
+#include "refNivel.h"
 //#include "bufduplo.h"
 
 //Definindo Variáveis necessárias para as medições de tempo
@@ -307,7 +308,8 @@ void main( int argc, char *argv[]) {
 	scanf(" ");
 	scanf("%lf", &nivel);
 	
-	
+	put_refTemp(temp);
+	put_refNivel(nivel);
 	
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7;
