@@ -22,12 +22,15 @@
 #define	NSEC_PER_SEC    (1000000000) 	// Numero de nanosegundos em um segundo
 #define	N_AMOSTRAS	100		// Numero de amostras (medições) coletadas
 long temp_exec[N_AMOSTRAS];		// Medicoes do tempo de execução da tarefa em microsegundos
+long valor_nivel[N_AMOSTRAS];
+long valor_temp[N_AMOSTRAS];
 
 
 //Thread que exibe os valores do Nível e Temperaturas na tela
 #define NSEC_PER_SEC (1000000000)
 void thread_mostra_status (void){
 	double temperatura, nivel, fluxo, temp_amb, temp_entrada;
+	int i = 0;
 	while(1){
 		temperatura = sensor_get_temperatura();
 		nivel = sensor_get_nivel();
@@ -48,9 +51,17 @@ void thread_mostra_status (void){
 		
 		printf("---------------------------------------\n");
 		libera_tela();//Libera os recursos 
+
+		//Grava no arquivo a temperatura e o nivel
+		valor_nivel[i] = nivel;
+		valor_temp[i] = temperatura;
+
 		sleep(1); //Executada a cada 1 segundo
-	}		
-		
+
+		i++; // incrementa i
+	}
+		thread_grava_sensor_nivel();
+		thread_grava_sensor_temperatura();
 }
 
 void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
@@ -164,8 +175,7 @@ void thread_grava_sensor_nivel(void){
 	}
 
 	for( int i=0; i<N_AMOSTRAS; i++){
-		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
-		fprintf(dados_f, "%4ld\n", temp_exec[i]);
+		fprintf(dados_f, "%4ld\n", valor_nivel[i]);
 	}
 	fclose(dados_f);	
 }
@@ -179,8 +189,7 @@ void thread_grava_sensor_temperatura(void){
 	}
 
 	for( int i=0; i<N_AMOSTRAS; i++){
-		printf("Tempo de execucao=%4ldus\n", temp_exec[i]);
-		fprintf(dados_f, "%4ld\n", temp_exec[i]);
+		fprintf(dados_f, "%4ld\n", valor_temp[i]);
 	}
 	fclose(dados_f);	
 }
