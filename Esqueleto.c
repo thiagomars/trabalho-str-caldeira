@@ -121,7 +121,7 @@ void thread_altera_ref (void){
 
 		printf("\n Escolha uma Opcao digitando o numero referente \n");
 		printf("\n 1 - Opcao 1 - Alterar Referencia de Temperatura ");
-		printf("\n 2 - Opcao 2 - Alterar Referencia de Nivel ");
+		printf("\n 2 - Opcao 2 - Alterar Referencia de Nivel de Agua ");
 		printf("\n 3 - Opcao 3 - Alterar ambas Referencias ");
 		printf("\n\n Escolha uma opcao: ");
 			
