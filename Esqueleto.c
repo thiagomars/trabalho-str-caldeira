@@ -91,7 +91,7 @@ void thread_altera_ref (void){
 		printf("\n 3 - Opcao 3 - Alterar ambas Referencias ");
 		printf("\n\n Escolha uma opcao: ");
 			
-		scanf("%d",&aux);
+		aux = getc(stdin);
 			
 		switch(aux){
 			
