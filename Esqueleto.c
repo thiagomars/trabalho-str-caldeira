@@ -73,6 +73,7 @@ void thread_alarme (void){
 		
 }
 
+/*
 void thread_altera_ref (void){
 	
 	while(1){
@@ -148,6 +149,7 @@ void thread_altera_ref (void){
 		put_refNivel(nivel);
 	}
 }
+*/
 
 
 /*
