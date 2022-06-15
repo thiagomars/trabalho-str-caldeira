@@ -73,7 +73,7 @@ void thread_alarme (void){
 		
 }
 
-/*
+
 void thread_altera_ref (void){
 	
 	while(1){
@@ -149,7 +149,7 @@ void thread_altera_ref (void){
 		put_refNivel(nivel);
 	}
 }
-*/
+
 
 
 /*
@@ -415,6 +415,7 @@ void main( int argc, char *argv[]) {
    
     	cria_socket(argv[1], atoi(argv[2]) ); //cria o canal de comunicação entre o simulador
 	
+/*	
 	double temp, nivel;
 	
 	printf("Digite um valor REFERENCIA para a Temperatura: \n");
@@ -434,8 +435,7 @@ void main( int argc, char *argv[]) {
 	
 	put_refTemp(temp);
 	put_refNivel(nivel);
-
-	
+*/
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
     //serão definidos 5 threads
