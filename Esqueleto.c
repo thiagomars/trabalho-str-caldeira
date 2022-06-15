@@ -115,6 +115,8 @@ void thread_altera_ref (void){
 		int aux;
     		double temp, nivel;
 		
+		aloca_tela();
+		
 		printf("\n\n ------------------------------------------------- ");
 
 		printf("\n Escolha uma Opcao digitando o numero referente \n");
@@ -174,6 +176,11 @@ void thread_altera_ref (void){
 			break;
 			}			
 		}	
+		
+		libera_tela();
+		
+		put_refTemp(temp);
+		put_refNivel(nivel);
 	}
 }
 
