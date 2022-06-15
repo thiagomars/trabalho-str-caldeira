@@ -406,6 +406,7 @@ struct timespec t;
 }
 
 */
+/*
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
@@ -434,7 +435,7 @@ void main( int argc, char *argv[]) {
 	
 	put_refTemp(temp);
 	put_refNivel(nivel);
-
+*/
 	
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
