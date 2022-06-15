@@ -15,6 +15,9 @@ void sensor_put_temperatura( double temp) {
 	//Seção crítica
 	pthread_mutex_lock( &exclusao_mutua); //Exclusão mútua dos recursos
 	s_temp = temp;//Aloca o valor de temperatura na variável global
+	if(s_temp >= limite_atual){
+		pthread_cond_signal(&alarme);
+	}
 	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
 
 }
