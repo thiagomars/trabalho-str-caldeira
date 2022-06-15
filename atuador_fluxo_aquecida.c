@@ -14,7 +14,7 @@ void atuador_put_fluxo_aquecida(double abertura){
 	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
 }
 
-double atuador_get_fluxo_aquecidar(void){
+double atuador_get_fluxo_aquecida(void){
 	double aux;
 	thread_mutex_lock( &exclusao_mutua); //Exclusão mútua dos recursos
 	aux = comporta;
