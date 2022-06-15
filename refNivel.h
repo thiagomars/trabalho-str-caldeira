@@ -1,7 +1,7 @@
 #ifndef REFNIVEL_H
 #define REFNIVEL_H
 
-void put_ref_niv(double ref);
-double get_ref_niv(void);
+void put_refNivel(double ref);
+double get_refNivel(void);
 
 #endif
