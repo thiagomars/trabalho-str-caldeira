@@ -113,30 +113,58 @@ void thread_controle_temperatura (void){
 	struct timespec t, t_fim;
 	long periodo = 50e6;  // 50ms
 	long temp_resp; // momento em que inicia até o fim
+	double temperatura_referencia, temperatura, temperatura_entra, temperatura_ambiente ;
 
 	// leitura da hora atual
   	clock_gettime(CLOCK_MONOTONIC, &t);
 
 	while(1){	
 		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
+		//inicialmente ler os sensores que envolve as temperaturas 
+		sensor_put_temperatura(msg_socket("st-0"));
+		sensor_put_temperatura_ambiente(msg_socket("sta0"));
+		sensor_put_temperatura_entrada(msg_socket("sti0"));
+		
+		//coletar a temperatura de referência e as demais temperaturas
+		temperatura_referencia = get_refTemp();
+		temperatura = sensor_get_temperatura();
+		temp_ambiente = sensor_get_temperatura_ambiente();
+		temp_entrada = sensor_get_temperatura_entrada();
+		
+		if(temperatura != temperatura_referencia ){//A temperatura do recipiente é diferente da referencia?
+			if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira
+			
 
-		//-------------->Códigos para controle de Temperatura aqui<------------------
 
-	// leitura da hora atual
-    clock_gettime(CLOCK_MONOTONIC, &t_fim);
+			}
+			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira
 
-    // calcula o tempo de resposta observado
-    temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
 
-    bufduplo_insere_leitura(temp_resp);
 
-    // calcula inicio do prox periodo
-    t.tv_nsec += periodo;
-    while (t.tv_nsec >= NSEC_PER_SEC) {
-      t.tv_nsec -= NSEC_PER_SEC;
-      t.tv_sec++;
-    }	
+
+			}		
+			
+		}
+
+
+
+
+		// leitura da hora atual
+    		clock_gettime(CLOCK_MONOTONIC, &t_fim);
+
+    		// calcula o tempo de resposta observado
+    		temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
+
+    		bufduplo_insere_leitura(temp_resp);
+
+    		// calcula inicio do prox periodo
+    		t.tv_nsec += periodo;
+    		while (t.tv_nsec >= NSEC_PER_SEC) {
+      			t.tv_nsec -= NSEC_PER_SEC;
+      			t.tv_sec++;
+    		}	
 	}
+}
 }
 
 */
