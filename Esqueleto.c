@@ -260,7 +260,7 @@ void thread_grava_temp_resp(void){
 
 	while(amostras++ <= N_AMOSTRAS / tambuffer) {
     //Espera até o buffer encher para descarregar no arquivo
-    long* buf = bufduplo_espera_buffer_cheio();
+    long* buf = bufduplo_esperaBufferCheio();
 
     int n2 = tamBuf();
     int tam = 0;
@@ -402,7 +402,7 @@ struct timespec t;
 	
 }
 
-/*
+
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
@@ -431,7 +431,7 @@ void main( int argc, char *argv[]) {
 	
 	put_refTemp(temp);
 	put_refNivel(nivel);
-	*/
+
 	
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
