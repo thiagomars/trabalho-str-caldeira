@@ -1,7 +1,7 @@
 #ifndef REFERENCIATEMPERATURA_H
 #define REFERENCIATEMPERATURA_H
 
-void put_ref_temp(double ref);
-double get_ref_temp(void);
+void put_refTemp(double ref);
+double get_refTemp(void);
 
 #endif
