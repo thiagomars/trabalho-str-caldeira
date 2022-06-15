@@ -1,6 +1,7 @@
 //Definição de Bibliotecas
 #include <pthread.h>
 #include <stdio.h>
+#include <conio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -106,6 +107,76 @@ void thread_alarme (void){
 	}
 		
 }
+
+void thread_altera_ref (void){
+	
+	while(1){
+		//Criando o menu
+		int aux;
+    		double temp, nivel;
+		
+		printf("\n\n ------------------------------------------------- ");
+
+		printf("\n Escolha uma Opcao digitando o numero referente \n");
+		printf("\n 1 - Opcao 1 - Alterar Referencia de Temperatura ");
+		printf("\n 2 - Opcao 2 - Alterar Referencia de Nivel ");
+		printf("\n 3 - Opcao 3 - Alterar ambas Referencias ");
+		printf("\n\n Escolha uma opcao: ");
+			
+		aux = getch();
+			
+		switch(aux){
+			
+			case '1':
+			{
+			
+			printf("\n\n Opcao escolhida: 1 \n");
+			printf("Digite um valor REFERENCIA para a Temperatura: ");
+			scanf(" ");
+			scanf("%lf", &temp);
+			
+			while(temp > 30.0){
+				printf("Digite um valor de referencia menor que 30 graus: \n");
+				scanf(" ");
+				scanf("%lf",&temp);
+    			}
+	
+			break;
+			}
+			
+			case '2':
+			{
+			printf("\n\n Opcao escolhida: 2 \n");
+			printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
+			scanf(" ");
+			scanf("%lf", &nivel);
+
+			break;
+			}
+			
+			case '3':
+			{
+			printf("\n\n Opcao escolhida: 3 \n");
+			printf("Digite um valor REFERENCIA para a Temperatura: \n");
+			scanf(" ");
+			scanf("%lf", &temp);
+	
+			while(temp > 30.0){
+				printf("Digite um valor de referência menor que 30 graus: \n");
+				scanf(" ");
+				scanf("%lf",&temp);
+    			}
+	
+			printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
+			scanf(" ");
+			scanf("%lf", &nivel);
+
+			break;
+			}			
+		}	
+	}
+}
+
 
 /*
 void thread_controle_temperatura (void){
@@ -324,6 +395,7 @@ struct timespec t;
 	
 }
 
+/*
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
@@ -352,9 +424,10 @@ void main( int argc, char *argv[]) {
 	
 	put_refTemp(temp);
 	put_refNivel(nivel);
+	*/
 	
 
-	pthread_t t1, t2, t3, t4, t5, t6, t7, t8;
+	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
     //serão definidos 5 threads
     pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
     pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
@@ -363,7 +436,8 @@ void main( int argc, char *argv[]) {
     pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
 	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
 	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
-	pthread_create(&t8, NULL, (void*) thread_controle_nivel, NULL);
+	pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
+	pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
     
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
@@ -373,4 +447,5 @@ void main( int argc, char *argv[]) {
 	pthread_join(t6, NULL);
 	pthread_join(t7, NULL);	    
 	pthread_join(t8, NULL);
+	pthread_join(t9, NULL);
 }
