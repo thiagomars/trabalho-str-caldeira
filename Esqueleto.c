@@ -311,7 +311,7 @@ void thread_mostra_status (void){
 
 
 
-/* Controlar nivel da caldeira */
+/* Controlar nivel da caldeira 
 void thread_controle_nivel(){
 struct timespec t;
 	long int periodo = 70e6; 	// 70ms
@@ -403,7 +403,7 @@ struct timespec t;
 	
 }
 
-
+*/
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
@@ -444,7 +444,7 @@ void main( int argc, char *argv[]) {
     pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
 	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
 	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
-	pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
+	//pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
 	pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
     
 	pthread_join(t1, NULL);
