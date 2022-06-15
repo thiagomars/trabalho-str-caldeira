@@ -2,6 +2,6 @@
 #define REFERENCIATEMPERATURA_H
 
 void put_ref_temp(double ref);
-double get_ref_temp();
+double get_ref_temp(void);
 
 #endif
