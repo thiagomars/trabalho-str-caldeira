@@ -406,15 +406,14 @@ struct timespec t;
 }
 
 */
-/*
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
 	int amostra = 0;		// Amostra corrente
 	int periodo = 100000000; 	// 100ms
 
-    //ref_putT(29.0);
-    cria_socket(argv[1], atoi(argv[2]) ); 
+   
+    	cria_socket(argv[1], atoi(argv[2]) ); //cria o canal de comunicação entre o simulador
 	
 	double temp, nivel;
 	
@@ -435,7 +434,7 @@ void main( int argc, char *argv[]) {
 	
 	put_refTemp(temp);
 	put_refNivel(nivel);
-*/
+
 	
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
