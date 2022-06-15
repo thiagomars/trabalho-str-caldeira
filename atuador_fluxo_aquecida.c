@@ -13,3 +13,11 @@ void atuador_put_fluxo_aquecida(double abertura){
 	comporta = abertura;//Aloca o valor de temperatura na variável global
 	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
 }
+
+double atuador_get_fluxo_aquecidar(void){
+	double aux;
+	thread_mutex_lock( &exclusao_mutua); //Exclusão mútua dos recursos
+	aux = comporta;
+	pthread_mutex_unlock( &exclusao_mutua);//Libera os recursos exclusos
+	return aux;
+}
