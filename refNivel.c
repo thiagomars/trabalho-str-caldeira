@@ -12,7 +12,7 @@ void put_refNivel(double ref) {
 }
 
 /*Chama qualquer thread que precisa do valor lido do sensor */ 
-double get_refNivel() {
+double get_refNivel(void) {
   double aux;
 
   pthread_mutex_lock(&exclusao_mutua);
