@@ -35,41 +35,7 @@ long valor_temp[N_AMOSTRAS];
 
 //Thread que exibe os valores do Nível e Temperaturas na tela
 #define NSEC_PER_SEC (1000000000)
-void thread_mostra_status (void){
-	double temperatura, nivel, fluxo, temp_amb, temp_entrada;
-	int i = 0;
-	while(1){
-		temperatura = sensor_get_temperatura();
-		nivel = sensor_get_nivel();
-		
-		fluxo = sensor_get_fluxo();
-		temp_amb = sensor_get_temperatura_ambiente();
-		temp_entrada = sensor_get_temperatura_entrada();
-		
-		aloca_tela();//Permite acesso exclusivo dos recursos para a tela do computador
-		system("tput reset"); //limpa tela
-		printf("---------------------------------------\n");
-		printf("Temperatura (T)--> %.4lf\n", temperatura);
-		printf("Nivel (H)--> %.4lf\n", nivel);
-		
-		printf("Fluxo (No)--> %.4lf\n", fluxo);
-		printf("Temperatura Ambiente (Ta)--> %.4lf\n", temp_amb);
-		printf("Temperatura Entrada (Ti)--> %.4lf\n", temp_entrada);
-		
-		printf("---------------------------------------\n");
-		libera_tela();//Libera os recursos 
 
-		//Grava no arquivo a temperatura e o nivel
-		valor_nivel[i] = nivel;
-		valor_temp[i] = temperatura;
-
-		sleep(1); //Executada a cada 1 segundo
-
-		i++; // incrementa i
-	}
-		thread_grava_sensor_nivel();
-		thread_grava_sensor_temperatura();
-}
 
 void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 	char msg_enviada[1000];	
@@ -304,6 +270,42 @@ void thread_grava_sensor_temperatura(void){
 		fprintf(dados_f, "%4ld\n", valor_temp[i]);
 	}
 	fclose(dados_f);	
+}
+
+void thread_mostra_status (void){
+	double temperatura, nivel, fluxo, temp_amb, temp_entrada;
+	int i = 0;
+	while(1){
+		temperatura = sensor_get_temperatura();
+		nivel = sensor_get_nivel();
+		
+		fluxo = sensor_get_fluxo();
+		temp_amb = sensor_get_temperatura_ambiente();
+		temp_entrada = sensor_get_temperatura_entrada();
+		
+		aloca_tela();//Permite acesso exclusivo dos recursos para a tela do computador
+		system("tput reset"); //limpa tela
+		printf("---------------------------------------\n");
+		printf("Temperatura (T)--> %.4lf\n", temperatura);
+		printf("Nivel (H)--> %.4lf\n", nivel);
+		
+		printf("Fluxo (No)--> %.4lf\n", fluxo);
+		printf("Temperatura Ambiente (Ta)--> %.4lf\n", temp_amb);
+		printf("Temperatura Entrada (Ti)--> %.4lf\n", temp_entrada);
+		
+		printf("---------------------------------------\n");
+		libera_tela();//Libera os recursos 
+
+		//Grava no arquivo a temperatura e o nivel
+		valor_nivel[i] = nivel;
+		valor_temp[i] = temperatura;
+
+		sleep(1); //Executada a cada 1 segundo
+
+		i++; // incrementa i
+	}
+		thread_grava_sensor_nivel();
+		thread_grava_sensor_temperatura();
 }
 
 
