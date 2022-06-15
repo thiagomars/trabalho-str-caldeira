@@ -1,7 +1,6 @@
 //Definição de Bibliotecas
 #include <pthread.h>
 #include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -91,7 +90,7 @@ void thread_altera_ref (void){
 		printf("\n 3 - Opcao 3 - Alterar ambas Referencias ");
 		printf("\n\n Escolha uma opcao: ");
 			
-		aux = getch();
+		scanf("%d",&aux);
 			
 		switch(aux){
 			
