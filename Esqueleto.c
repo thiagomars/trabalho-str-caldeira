@@ -311,12 +311,16 @@ void thread_mostra_status (void){
 
 
 
-
-
-/* Controlar nivel da caldeira 
+// Controlar nivel da caldeira 
 void thread_controle_nivel(){
 struct timespec t;
 	long int periodo = 70e6; 	// 70ms
+	
+	char tam[1000];
+	
+	//Nivel de referencia
+	double href = get_refNivel();
+	double temp_ref = get_refTemp();
 	
 	// Le a hora atual, coloca em t
 	clock_gettime(CLOCK_MONOTONIC ,&t);
@@ -333,19 +337,19 @@ struct timespec t;
                 double atu_q, atu_ni, atu_na, atu_nf;
                 
                 //verificar se o nivel está baixo -> Hmin = 0,1m e Hmax = 3,0m
-                if(sensor_get_nivel() < HREF){
+                if(sensor_get_nivel() < href){
                 	//Verificar a temperatura
-                	if(TEMP_REF < sensor_get_temperatura()){ //temperatura alta
+                	if(temp_ref < sensor_get_temperatura()){ //temperatura alta
                 		atu_q = 0;
                 		atu_ni = 100;
                 		atu_na = 0;
                 		atu_nf = 0;
-			} else if(TEMP_REF > sensor_get_temperatura()){ //temperatura baixa
+			} else if(temp_ref > sensor_get_temperatura()){ //temperatura baixa
 				atu_q = 0;
                 		atu_ni = 100;
                 		atu_na = 10;
                 		atu_nf = 100000;
-			} else if(TEMP_REF == sensor_get_temperatura()){ //temperatura ideal
+			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
 				atu_q = 100;
                 		atu_ni = 100;
                 		atu_na = 0;
@@ -354,19 +358,19 @@ struct timespec t;
                 }
                 
                 //verificar se o nivel está alto -> Hmin = 0,1m e Hmax = 3,0m
-                if(sensor_get_nivel() > HREF){
+                if(sensor_get_nivel() > href){
                 	//Verificar a temperatura
-                	if(TEMP_REF < sensor_get_temperatura()){ //temperatura alta
+                	if(temp_ref < sensor_get_temperatura()){ //temperatura alta
                 		atu_q = 0;
                 		atu_ni = 0;
                 		atu_na = 0;
                 		atu_nf = 100;
-			} else if(TEMP_REF > sensor_get_temperatura()){ //temperatura baixa
+			} else if(temp_ref > sensor_get_temperatura()){ //temperatura baixa
 				atu_q = 100000;
                 		atu_ni = 0;
                 		atu_na = 10;
                 		atu_nf = 100;
-			} else if(TEMP_REF == sensor_get_temperatura()){ //temperatura ideal
+			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
 				atu_q = 100;
                 		atu_ni = 0;
                 		atu_na = 0;
@@ -378,20 +382,20 @@ struct timespec t;
 		// enviar os valores para os atuadores
 		
 		// atuador do aquecedor
-		sprintf(msg_enviada, "aq-%lf", atu_q);
-		msg_socket(msg_enviada);
+		sprintf(tam, "aq-%lf", atu_q);
+		msg_socket(tam);
                 
 		// atuador de entrada de agua ambiente
-		sprintf(msg_enviada, "ani%lf", atu_ni);
-		msg_socket(msg_enviada);
+		sprintf(tam, "ani%lf", atu_ni);
+		msg_socket(tam);
 		
 		// atuador de entrada de agua aquecida 80 graus
-		sprintf(msg_enviada, "ana%lf", atu_na);
-		msg_socket(msg_enviada);
+		sprintf(tam, "ana%lf", atu_na);
+		msg_socket(tam);
 
 		// atuador de saída de agua do esgoto controlado
-		sprintf(msg_enviada, "anf%lf", atu_nf);
-		msg_socket(msg_enviada);
+		sprintf(tam, "anf%lf", atu_nf);
+		msg_socket(tam);
 
 		printf("Passou um periodo !\n");	
 
@@ -405,7 +409,7 @@ struct timespec t;
 	
 }
 
-*/
+
 void main( int argc, char *argv[]) {
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
