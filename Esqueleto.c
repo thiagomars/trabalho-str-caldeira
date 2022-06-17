@@ -176,19 +176,18 @@ void thread_altera_ref (void){
 void thread_controle_temperatura (void){
 
 	struct timespec t, t_fim;
-	long periodo = 50e6;  // 50ms
-	long temp_resp; // momento em que inicia até o fim
-	double temperatura_referencia, temperatura, temperatura_entra, temperatura_ambiente ;
+	long periodo = 50e6;  // Período de execução da tarefa é de 50ms
+	double temperatura_referencia, temperatura, temperatura_entra, temperatura_ambiente;//grava as temperaturas do processo
+	double aquecedor, fluxo_entrada, fluxo_saida, fluxo_entrada_aquecida;
+	double erro, proporcional_erro, erro, aux;
+	long temp_resp; // Armazena o calculo do momento em que inicia a tarefa até o fim
 
-	// leitura da hora atual
+	//Atualiza o tempo e faz a leitura da hora atual e coloca na variavel t
   	clock_gettime(CLOCK_MONOTONIC, &t);
 
-	while(1){	
+	while(1){
+		// espera até o inicio do próximo periodo	
 		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
-		//inicialmente ler os sensores que envolve as temperaturas 
-		sensor_put_temperatura(msg_socket("st-0"));
-		sensor_put_temperatura_ambiente(msg_socket("sta0"));
-		sensor_put_temperatura_entrada(msg_socket("sti0"));
 		
 		//coletar a temperatura de referência e as demais temperaturas
 		temperatura_referencia = get_refTemp();
@@ -197,40 +196,74 @@ void thread_controle_temperatura (void){
 		temp_entrada = sensor_get_temperatura_entrada();
 		
 		if(temperatura != temperatura_referencia ){//A temperatura do recipiente é diferente da referencia?
-			if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira
-			
-
+			if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira ( Necessário esquentar a água )
+				erro = temperatura_referencia-temperatura;
+				proporcional_erro = ((erro)/temperatura_referencia)*100;
+				atuador_put_aquecedor(proporcional_erro*10000);
+				atuador_put_entrada(0.0);
+				
+				if(proporcional_erro>=50){//Aquecer rapidamente
+					atuador_put_fluxo_aqueceda(10.0);
+					atuador_put_saida(10.0)
+					
+				}
+				
+				
 
 			}
-			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira
-
-
-
-
-			}		
+			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
+				atuador_put_aquecedor(0.0);
+				atuador_put_fluxo_aquecida(0.0);
+				
+				if(temp_entrada<temperatura){
+					erro = temperatura - temp_entrada;
+					proporcional_erro = (erro/temperatura)*100;// A vasão é proporcional ao erro da temperatura da caldeira e da temperatura da água que entra
+					if(proporcional_erro>=50){//se a temperatura de referencia for muito baixa em relação a temperatura do tanque
+						atuador_put_entrada(100.0);
+						atuador_put_saida(100.0);
+					}else{
+						atuador_put_entrada(proporcional_erro);
+						atuador_put_saida(proporcional_erro);
+					}
+				}else{
+					atuador_put_entrada(0.0);
+					atuador_put_saida(0.0);
+				}
+				erro = temperatura - temperatura_referencia;
+				
+						
+			}
+			if(erro>=0 && erro<=0.01){ // estabilizar em relação a temperatura ambiente
+				proporcional_erro = (temperatura - tem_ambiente)/0.001;
+				atuador_put_aquecedor(proporcional_erro);
+				atuador_put_entrada(0.0);
+				atuador_put_saida(0.0);
+			}
+			
 			
 		}
 
 
 
 
-		// leitura da hora atual
+		// 
     		clock_gettime(CLOCK_MONOTONIC, &t_fim);
 
-    		// calcula o tempo de resposta observado
+    		// calcula o tempo de resposta desda leitura dos sensores até mandar a msg via socket
     		temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
 
-    		bufduplo_insere_leitura(temp_resp);
+    		bufduplo_insereLeitura(temp_resp);
 
-    		// calcula inicio do prox periodo
+    		// calcula o inicio do próximo periodo(define qual o próximo ponto no relógio)
     		t.tv_nsec += periodo;
-    		while (t.tv_nsec >= NSEC_PER_SEC) {
+		while (t.tv_nsec >= NSEC_PER_SEC) {// estrutura aponta para o periodo no relogio monotomico
       			t.tv_nsec -= NSEC_PER_SEC;
       			t.tv_sec++;
     		}	
 	}
+
 }
-}
+
 
 */
 
