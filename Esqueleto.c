@@ -54,19 +54,19 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 		sensor_put_temperatura_entrada(msg_socket("sti0"));
 		
 		var_q = atuador_get_aquecedor();
-		sprintf(tam, "aq-%lf", var_q);
+		sprintf(msg_enviada, "aq-%lf", var_q);
 		msg_socket(msg_enviada);
                 
 		var_ni = atuador_get_entrada();
-		sprintf(tam, "ani%lf", var_ni);
+		sprintf(msg_enviada, "ani%lf", var_ni);
 		msg_socket(msg_enviada);
 		
 		var_na = atuador_get_fluxo_aquecida();
-		sprintf(tam, "ana%lf", atu_na);
+		sprintf(msg_enviada, "ana%lf", var_na);
 		msg_socket(msg_enviada);
 
 		var_nf = atuador_get_saida();
-		sprintf(tam, "anf%lf", atu_nf);
+		sprintf(msg_enviada, "anf%lf", var_nf);
 		msg_socket(msg_enviada);
 
 		t.tv_nsec += periodo;
