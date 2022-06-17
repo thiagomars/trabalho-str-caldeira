@@ -398,6 +398,26 @@ struct timespec t;
 			}
                 }
                 
+		//verificação mais precisa para manter o nivel
+                if((0.001) >= (sensor_get_nivel() - href) && (-0.001) <= (sensor_get_nivel() - href)){
+                	//Verificar a temperatura
+                	if(temp_ref < sensor_get_temperatura()){ //temperatura alta
+                		atu_q = 0;
+                		atu_ni = 0;
+                		atu_na = 0;
+                		atu_nf = 10;
+			} else if(temp_ref > sensor_get_temperatura()){ //temperatura baixa
+				atu_q = 100;
+                		atu_ni = 0;
+                		atu_na = 1;
+                		atu_nf = 10;
+			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
+				atu_q = 0;
+                		atu_ni = 0;
+                		atu_na = 0;
+                		atu_nf = 0;
+			}
+                }
 		
 		// enviar os valores para os atuadores
 		
