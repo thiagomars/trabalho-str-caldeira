@@ -93,7 +93,7 @@ void thread_alarme (void){
 		
 }
 
-
+/*
 void thread_altera_ref (void){
 	
 	while(1){
@@ -170,16 +170,16 @@ void thread_altera_ref (void){
 	}
 }
 
+*/
 
 
-/*
 void thread_controle_temperatura (void){
 
 	struct timespec t, t_fim;
 	long periodo = 50e6;  // Período de execução da tarefa é de 50ms
-	double temperatura_referencia, temperatura, temperatura_entra, temperatura_ambiente;//grava as temperaturas do processo
+	double temperatura_referencia, temperatura, temp_entrada, temp_ambiente;//grava as temperaturas do processo
 	double aquecedor, fluxo_entrada, fluxo_saida, fluxo_entrada_aquecida;
-	double erro, proporcional_erro, erro, aux;
+	double proporcional_erro, erro, aux;
 	long temp_resp; // Armazena o calculo do momento em que inicia a tarefa até o fim
 
 	//Atualiza o tempo e faz a leitura da hora atual e coloca na variavel t
@@ -202,13 +202,14 @@ void thread_controle_temperatura (void){
 				atuador_put_aquecedor(proporcional_erro*10000);
 				atuador_put_entrada(0.0);
 				
-				if(proporcional_erro>=50){//Aquecer rapidamente
-					atuador_put_fluxo_aqueceda(10.0);
-					atuador_put_saida(10.0)
+				if(proporcional_erro>=30){//Aquecer rapidamente
+					atuador_put_fluxo_aquecida(10.0);
+					atuador_put_saida(10.0);
 					
-				}
-				
-				
+				}else{
+					atuador_put_fluxo_aquecida(0.0);
+					atuador_put_saida(0.0);
+				}		
 
 			}
 			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
@@ -234,10 +235,11 @@ void thread_controle_temperatura (void){
 						
 			}
 			if(erro>=0 && erro<=0.01){ // estabilizar em relação a temperatura ambiente
-				proporcional_erro = (temperatura - tem_ambiente)/0.001;
+				proporcional_erro = (temperatura - temp_ambiente)/0.001;
 				atuador_put_aquecedor(proporcional_erro);
 				atuador_put_entrada(0.0);
 				atuador_put_saida(0.0);
+				atuador_put_fluxo_aquecida(0.0);
 			}
 			
 			
@@ -265,7 +267,7 @@ void thread_controle_temperatura (void){
 }
 
 
-*/
+
 
 void thread_grava_temp_resp(void){
     FILE* dados_f;
@@ -505,27 +507,27 @@ void main( int argc, char *argv[]) {
 	printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
 	scanf(" ");
 	scanf("%lf", &nivel);
-	
-	put_refTemp(temp);
-	put_refNivel(nivel);
-*/
+*/	
+	put_refTemp(10.0);
+	put_refNivel(2.0);
+
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
-    //serão definidos 5 threads
-    pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
-    pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
-    pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
-    //pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
-    pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
+    	//serão definidos 5 threads
+    	pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
+    	pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
+    	pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
+    	pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
+   	pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
 	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
 	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
-	//pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
-	pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
+	pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
+	//pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
     
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
 	pthread_join( t3, NULL);
-	//pthread_join( t4, NULL);
+	pthread_join( t4, NULL);
 	pthread_join(t5, NULL);
 	pthread_join(t6, NULL);
 	pthread_join(t7, NULL);	    
