@@ -40,7 +40,10 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 	char msg_enviada[1000];	
 	struct timespec t, t_fim;
 	long periodo = 10e6;
-
+	
+	//variaveis dos atuadores
+	double var_q, var_ni, var_na, var_nf;
+	
 	clock_gettime(CLOCK_MONOTONIC, &t);
 	while(1){
 		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
@@ -49,8 +52,25 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 		sensor_put_temperatura_ambiente(msg_socket("sta0"));
 		sensor_put_fluxo(msg_socket("sno0"));
 		sensor_put_temperatura_entrada(msg_socket("sti0"));
+		
+		var_q = atuador_get_aquecedor();
+		sprintf(tam, "aq-%lf", var_q);
+		msg_socket(msg_enviada);
+                
+		var_ni = atuador_get_entrada();
+		sprintf(tam, "ani%lf", var_ni);
+		msg_socket(msg_enviada);
+		
+		var_na = atuador_get_fluxo_aquecida();
+		sprintf(tam, "ana%lf", atu_na);
+		msg_socket(msg_enviada);
+
+		var_nf = atuador_get_saida();
+		sprintf(tam, "anf%lf", atu_nf);
+		msg_socket(msg_enviada);
 
 		t.tv_nsec += periodo;
+
 		while(t.tv_nsec>= NSEC_PER_SEC){
 			t.tv_nsec -= NSEC_PER_SEC;
 			t.tv_nsec ++;
@@ -382,20 +402,16 @@ struct timespec t;
 		// enviar os valores para os atuadores
 		
 		// atuador do aquecedor
-		sprintf(tam, "aq-%lf", atu_q);
-		msg_socket(tam);
+		atuador_put_aquecedor(atu_q);
                 
 		// atuador de entrada de agua ambiente
-		sprintf(tam, "ani%lf", atu_ni);
-		msg_socket(tam);
+		atuador_put_entrada(atu_ni);
 		
 		// atuador de entrada de agua aquecida 80 graus
-		sprintf(tam, "ana%lf", atu_na);
-		msg_socket(tam);
+		atuador_put_fluxo_aquecida(atu_na);
 
 		// atuador de saída de agua do esgoto controlado
-		sprintf(tam, "anf%lf", atu_nf);
-		msg_socket(tam);
+		atuador_put_saida(atu_nf);
 
 		printf("Passou um periodo !\n");	
 
