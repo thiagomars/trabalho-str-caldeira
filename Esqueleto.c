@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 #include "time.h" // utilizado para medição de tempo
 #include "tela.h" //Inclusão do monitor que acessa/requisitar a tela do computador
 //Inclusão do monitor que ler e disponibiliza valor dos dados para a threads da main 
@@ -194,24 +195,42 @@ void thread_controle_temperatura (void){
 		temperatura = sensor_get_temperatura();
 		temp_ambiente = sensor_get_temperatura_ambiente();
 		temp_entrada = sensor_get_temperatura_entrada();
+		fluxo_entrada = atuador_get_entrada();
+		erro = temperatura_referencia-temperatura;
 		
-		if(temperatura != temperatura_referencia ){//A temperatura do recipiente é diferente da referencia?
+		//A temperatura do recipiente é diferente da referencia?
 			if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira ( Necessário esquentar a água )
-				erro = temperatura_referencia-temperatura;
-				proporcional_erro = ((erro)/temperatura_referencia)*100;
-				atuador_put_aquecedor(proporcional_erro*10000);
-				atuador_put_entrada(0.0);
 				
-				if(proporcional_erro>=30){//Aquecer rapidamente
-					atuador_put_fluxo_aquecida(10.0);
-					atuador_put_saida(10.0);
+				proporcional_erro = ((erro)/temperatura_referencia)*100;
+
+				if(fluxo_entrada > 0){//está entrando agua com temperatura menor
 					
+					atuador_put_aquecedor(proporcional_erro*10000 + fabs(fluxo_entrada*4184*(temp_entrada-temperatura)));
+					if(proporcional_erro>=5){//Aquecer rapidamente
+						atuador_put_fluxo_aquecida(10.0);
+						atuador_put_saida(0.0);
+					
+					}else{
+						atuador_put_fluxo_aquecida(0.0);
+						atuador_put_saida(0.0);
+					}
+											
 				}else{
-					atuador_put_fluxo_aquecida(0.0);
-					atuador_put_saida(0.0);
+				
+					if(proporcional_erro>=10){//Aquecer rapidamente
+						atuador_put_aquecedor(1000000);						
+						atuador_put_fluxo_aquecida(10.0);
+						atuador_put_saida(10.0);
+					
+					}else{
+						atuador_put_aquecedor(proporcional_erro*100000);
+						atuador_put_fluxo_aquecida(0.0);
+						atuador_put_saida(0.0);
+					}
 				}		
 
 			}
+
 			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
 				atuador_put_aquecedor(0.0);
 				atuador_put_fluxo_aquecida(0.0);
@@ -234,7 +253,7 @@ void thread_controle_temperatura (void){
 				
 						
 			}
-			if(erro>=0 && erro<=0.01){ // estabilizar em relação a temperatura ambiente
+			if(erro>= 0 && erro<=0.0001){ // estabilizar em relação a temperatura ambiente
 				proporcional_erro = (temperatura - temp_ambiente)/0.001;
 				atuador_put_aquecedor(proporcional_erro);
 				atuador_put_entrada(0.0);
@@ -243,7 +262,7 @@ void thread_controle_temperatura (void){
 			}
 			
 			
-		}
+		
 
 
 
@@ -403,7 +422,7 @@ struct timespec t;
 				atu_q = 0;
                 		atu_ni = 100;
                 		atu_na = 10;
-                		atu_nf = 100000;
+                		atu_nf = 90;
 			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
 				atu_q = 100;
                 		atu_ni = 100;
@@ -424,7 +443,7 @@ struct timespec t;
 				atu_q = 100000;
                 		atu_ni = 0;
                 		atu_na = 10;
-                		atu_nf = 100;
+                		atu_nf = 90;
 			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
 				atu_q = 100;
                 		atu_ni = 0;
@@ -457,18 +476,18 @@ struct timespec t;
 		// enviar os valores para os atuadores
 		
 		// atuador do aquecedor
-		atuador_put_aquecedor(atu_q);
+		//atuador_put_aquecedor(atu_q);
                 
 		// atuador de entrada de agua ambiente
 		atuador_put_entrada(atu_ni);
 		
 		// atuador de entrada de agua aquecida 80 graus
-		atuador_put_fluxo_aquecida(atu_na);
+		//atuador_put_fluxo_aquecida(atu_na);
 
 		// atuador de saída de agua do esgoto controlado
 		atuador_put_saida(atu_nf);
 
-		printf("Passou um periodo !\n");	
+		//printf("Passou um periodo !\n");	
 
 		// Calcula inicio do proximo periodo
 		t.tv_nsec += periodo;
@@ -508,8 +527,8 @@ void main( int argc, char *argv[]) {
 	scanf(" ");
 	scanf("%lf", &nivel);
 */	
-	put_refTemp(10.0);
-	put_refNivel(2.0);
+	put_refTemp(30.0);
+	put_refNivel(3.0);
 
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
