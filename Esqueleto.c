@@ -497,24 +497,72 @@ void main( int argc, char *argv[]) {
    
     	cria_socket(argv[1], atoi(argv[2]) ); //cria o canal de comunicação entre o simulador
 	
-/*	
-	double temp, nivel;
+
+	int aux;
+    	double temp, nivel;
+		
+	aloca_tela();
+	system("tput reset"); //limpa tela
+	printf("\n\n ------------------------------------------------- ");
+	printf("\n Escolha uma Opcao digitando o numero referente \n");
+	printf("\n 1 - Opcao 1 - Alterar Referencia de Temperatura ");
+	printf("\n 2 - Opcao 2 - Alterar Referencia de Nivel de Agua ");
+	printf("\n 3 - Opcao 3 - Alterar ambas Referencias ");
+	printf("\n\n Escolha uma opcao: ");
+			
+	aux = getc(stdin);
+			
+	switch(aux){
+			
+		case '1':
+		{
+			
+		printf("\n\n Opcao escolhida: 1 \n");
+		printf("Digite um valor REFERENCIA para a Temperatura: ");
+		scanf(" ");
+		scanf("%lf", &temp);
+			
+		while(temp > 30.0){
+			printf("Digite um valor de referencia menor que 30 graus: \n");
+			scanf(" ");
+			scanf("%lf",&temp);
+    		}
 	
-	printf("Digite um valor REFERENCIA para a Temperatura: \n");
-	scanf(" ");
-	scanf("%lf", &temp);
+		break;
+		}
+			
+		case '2':
+		{
+		printf("\n\n Opcao escolhida: 2 \n");
+		printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
+		scanf(" ");
+		scanf("%lf", &nivel);
+		break;
+		}
+			
+		case '3':
+		{
+		printf("\n\n Opcao escolhida: 3 \n");
+		printf("Digite um valor REFERENCIA para a Temperatura: \n");
+		scanf(" ");
+		scanf("%lf", &temp);
 	
-	while(temp > 30.0){
+		while(temp > 30.0){
 		printf("Digite um valor de referência menor que 30 graus: \n");
 		scanf(" ");
 		scanf("%lf",&temp);
-			
-    	}
+  		}
 	
-	printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
-	scanf(" ");
-	scanf("%lf", &nivel);
-*/	
+		printf("Digite um valor REFERENCIA para o Nivel de Agua: \n");
+		scanf(" ");
+		scanf("%lf", &nivel);
+		break;
+		
+		}			
+	}	
+	libera_tela();
+	
+	
 	put_refTemp(30.0);
 	put_refNivel(3.0);
 
