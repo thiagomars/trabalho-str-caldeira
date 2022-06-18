@@ -40,7 +40,15 @@ Caldeira, controle de sistema, software em tempo real.
 
 \section{Introdução}
 
-\IEEEPARstart{E}{screva} uma breve introdução sobre os sistemas de tempo real, falando sobre o uso de mutex, monitores e por fim apresentando o que o trabalho pretende mostrar.
+\IEEEPARstart{s}{oftware} em tempo real, pode ser entendido como sistemas computacionais com requisitos de tempo real, sendo uma categoria especial de sistema operacionais. Essa técnica, aplica-se a problemas que exijam requisitos com funcionalidades de natureza temporal não triviais, nesse sentido é essencial a confiabilidade no tempo de execução da tarefa e compatibilidade com prazos e requisitos definidos, ocasionando em resultados corretos logicamente e temporalmente.\cite{IEEEhowto:romulo}
+
+Para os requisitos temporais, é necessário destacar que estão diretamente acoplados ao meio, no sentido de estarem fortemente associados com o mundo físico e que por isso a extração dos requisitos devem ocorrer na perspectiva do sistema responder ao estímulos do ambiente. Destacam-se os seguintes requisitos temporais:  periodicidade, o Deadline, Atualidade ou frescor dos dados e a simultaneidade dos dados.\cite{IEEEhowto:romulo}
+
+Na aplicação de softwares de tempo real, o compartilhamento de recursos entre tarefas pode ocasionar inconsistência de dados e inversões de prioridades entre tarefas caso seja mal implementado. Para os trechos do código onde a tarefa acessa algum recurso compartilhado é necessário definir uma seção crítica. Para evitar a inconsistência dos dados é usado o mecanismos do Mutex, "técnica de sincronização que possibilita assegurar o acesso exclusivo (leitura e escrita) a um recurso compartilhado por duas ou mais entidades"\cite{IEEEhowto:Borges}, evitando que duas tarefas acessem ao mesmo tempo o memória. 
+
+Nesse sentido, para acessar recursos compartilhados por outras tarefas é necessário definir mecanismos de sincronização para controlar o acesso de recursos e garantir que todos as tarefas possam executar suas seções críticas sem interferir com as seções críticas das outras tarefas.
+
+
 
 A idéia do monitor é tornar determinados recursos privativo as tarefas \cite{IEEEhowto:romulo}.
 \section{Metodologia}
@@ -71,6 +79,9 @@ Apresente os resultados da parte I e II e discuta os resultados de acordo com o 
 
 \bibitem{IEEEhowto:romulo}
 Oliveira, R. S. Fundamentos dos Sistemas de Tempo Real. Original registrado na Biblioteca Nacional. Primeira edição, revisão 3, outubro de 2018. ISBN-13: 9781728694047.
+
+\bibitem{IEEEhowto:Borges}
+Borges, V. B. Exclusão mútua (mutex). Departamento de Sistemas Eletrônicos Escola Politécnica da USP. 2017.
 
 \end{thebibliography}
 
