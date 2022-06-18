@@ -27,7 +27,7 @@
 
 //Definindo Variáveis necessárias para as medições de tempo
 #define	NSEC_PER_SEC    (1000000000) 	// Numero de nanosegundos em um segundo
-#define	N_AMOSTRAS	1000		// Numero de amostras (medições) coletadas
+#define	N_AMOSTRAS	10000		// Numero de amostras (medições) coletadas
 long temp_exec[N_AMOSTRAS];		// Medicoes do tempo de execução da tarefa em microsegundos
 double valores_altura[N_AMOSTRAS];
 double valores_temperatura[N_AMOSTRAS];
@@ -329,7 +329,7 @@ void thread_grava_temp_resp(void){
     int tam = 0;
 
     while (tam < n2)
-      fprintf(dados_f, "%4ld\n", buf[tam++]);
+      fprintf(dados_f, "%ld\n", buf[tam++]);
 
     fflush(dados_f);
 
