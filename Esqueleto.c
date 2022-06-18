@@ -220,7 +220,6 @@ void thread_controle_temperatura (void){
 
 	//Atualiza o tempo e faz a leitura da hora atual e coloca na variavel t
   	clock_gettime(CLOCK_MONOTONIC, &t);
-
 	while(1){
 		// espera até o inicio do próximo periodo	
 		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
@@ -242,7 +241,7 @@ void thread_controle_temperatura (void){
 				if(proporcional_erro>=5){ //Caso a temperatura começa a cair bruscamente(erro fique maior que 5%)
 					atuador_put_fluxo_aquecida(10.0);//aciona o fluxo de água quente, ajudando a aumentar o nível 
 				}else{//Caso o erro seja menor que %5
-					atuador_put_fluxo_aquecida(0.0);//desliga o  fluxo de água quente
+					atuador_put_fluxo_aquecida(0.0);//desliga o fluxo de água quente
 					atuador_put_saida(0.0); //Desliga o fluxo de saida
 				}							
 			}else{
@@ -261,22 +260,22 @@ void thread_controle_temperatura (void){
 		}
 
 		if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
-			atuador_put_aquecedor(0.0);
-			atuador_put_fluxo_aquecida(0.0);
+			atuador_put_aquecedor(0.0);//desliga o aquecedor
+			atuador_put_fluxo_aquecida(0.0);//desliga o fluxo de água quente
 			
-			if(temp_entrada<temperatura){
+			if(temp_entrada<=temperatura){//temperatura da água que entra é menor que a temperatura da caldeira (Água resfria a caldeira)
 				erro = temperatura - temp_entrada;
 				proporcional_erro = (erro/temperatura)*100;// A vasão é proporcional ao erro da temperatura da caldeira e da temperatura da água que entra
-				if(proporcional_erro>=0){//se a temperatura de referencia for muito baixa em relação a temperatura do tanque
-					atuador_put_entrada(100.0);
-					atuador_put_saida(100.0);
-				}else{
-					atuador_put_entrada(proporcional_erro);
+				if(proporcional_erro>=10){//se a temperatura de referencia for muito baixa em relação a temperatura do tanque (resfriar rapidamente)
+					atuador_put_entrada(100.0);//liga o fluxo de entrada de água 
+					atuador_put_saida(100.0);//liga o fluxo de saída de água 
+				}else{//caso contrário
+					atuador_put_entrada(proporcional_erro);//vasão de entrada é proporcional ao erro da temperatura de entrada e a referencia
 					atuador_put_saida(proporcional_erro);
 				}
-			}else{
-				atuador_put_entrada(0.0);
-				atuador_put_saida(0.0);
+			}else{//Quando a Temperatura da água que entra for maior que a temperatura da caldeira
+				atuador_put_entrada(0.0);//Desliga o fluxo de entrada de água
+				atuador_put_saida(0.0);//Desliga fluxo de saída de água 
 			}
 			erro = temperatura - temperatura_referencia;
 			
