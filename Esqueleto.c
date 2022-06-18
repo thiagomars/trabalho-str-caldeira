@@ -29,9 +29,8 @@
 #define	NSEC_PER_SEC    (1000000000) 	// Numero de nanosegundos em um segundo
 #define	N_AMOSTRAS	100		// Numero de amostras (medições) coletadas
 long temp_exec[N_AMOSTRAS];		// Medicoes do tempo de execução da tarefa em microsegundos
-long valor_nivel[N_AMOSTRAS];
-long valor_temp[N_AMOSTRAS];
-
+double valores_altura[N_AMOSTRAS];
+double valores_temperatura[N_AMOSTRAS];
 
 //Thread que exibe os valores do Nível e Temperaturas na tela
 #define NSEC_PER_SEC (1000000000)
@@ -41,6 +40,9 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 	char msg_enviada[1000];	
 	struct timespec t, t_fim;
 	long periodo = 10e6;
+
+	int intervalo = 100; //Numero de vezes que o programa vai rodar até gravar no arquivo (100x10ms= 1000ms = 1s)
+	int cont = 0;
 	
 	//variaveis dos atuadores
 	double var_q, var_ni, var_na, var_nf;
@@ -70,6 +72,39 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 		sprintf(msg_enviada, "anf%lf", var_nf);
 		msg_socket(msg_enviada);
 
+		intervalo--;
+
+        if(intervalo == 0 && cont < N_AMOSTRAS){
+			valores_altura[cont] = sensor_get_nivel();
+			valores_temperatura[cont] = sensor_get_temperatura();
+        
+            intervalo = 100;
+            cont++;        
+        }
+
+		if(cont >= N_AMOSTRAS){
+			FILE * dados_t;
+	        dados_t = fopen("sensor_t.txt", "w");
+	        if(dados_t ==NULL){
+		        printf("Erro na abertura do arquivo do sensor de temperatura\n");
+		        exit(1);
+	        }
+            FILE * dados_h;
+	        dados_h = fopen("sensor_h.txt", "w");
+	        if(dados_h ==NULL){
+		        printf("Erro na abertura do arquivo do sensor de nivel\n");
+		        exit(1);
+	        }
+			for( int i=0; i<N_AMOSTRAS; i++){
+				fprintf(dados_t, "%2lf\n", valores_altura[i]);
+				fprintf(dados_h, "%2lf\n", valores_temperatura[i]);
+				}
+	
+				fclose(dados_t);
+				fclose(dados_h);	
+
+		}
+		
 		t.tv_nsec += periodo;
 
 		while(t.tv_nsec>= NSEC_PER_SEC){
@@ -313,34 +348,6 @@ void thread_grava_temp_resp(void){
 	fclose(dados_f);	
 }
 
-void thread_grava_sensor_nivel(void){
-    FILE* dados_f;
-	dados_f = fopen("dados_nivel.txt", "w");
-	if(dados_f == NULL){
-		printf("Erro, nao foi possivel abrir o arquivo\n");
-		exit(1);
-	}
-
-	for( int i=0; i<N_AMOSTRAS; i++){
-		fprintf(dados_f, "%4ld\n", valor_nivel[i]);
-	}
-	fclose(dados_f);	
-}
-
-void thread_grava_sensor_temperatura(void){
-    FILE* dados_f;
-	dados_f = fopen("dados_temperatura.txt", "w");
-	if(dados_f == NULL){
-		printf("Erro, nao foi possivel abrir o arquivo\n");
-		exit(1);
-	}
-
-	for( int i=0; i<N_AMOSTRAS; i++){
-		fprintf(dados_f, "%4ld\n", valor_temp[i]);
-	}
-	fclose(dados_f);	
-}
-
 void thread_mostra_status (void){
 	double temperatura, nivel, fluxo, temp_amb, temp_entrada;
 	int i = 0;
@@ -365,16 +372,9 @@ void thread_mostra_status (void){
 		printf("---------------------------------------\n");
 		libera_tela();//Libera os recursos 
 
-		//Grava no arquivo a temperatura e o nivel
-		valor_nivel[i] = nivel;
-		valor_temp[i] = temperatura;
-
 		sleep(1); //Executada a cada 1 segundo
-
-		i++; // incrementa i
 	}
-		thread_grava_sensor_nivel();
-		thread_grava_sensor_temperatura();
+
 }
 
 
@@ -533,8 +533,6 @@ void main( int argc, char *argv[]) {
     	pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
     	pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
    	pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
-	pthread_create(&t6, NULL, (void *) thread_grava_sensor_nivel, NULL);
-	pthread_create(&t7, NULL, (void *) thread_grava_sensor_temperatura, NULL);
 	pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
 	//pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
     

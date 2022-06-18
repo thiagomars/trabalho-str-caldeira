@@ -2,7 +2,7 @@ HOST = localhost
 PORT = 4545
 
 
-runAquecedor: clean
+ligaAquecedor: clean
 	echo $@	
 	@ java -jar Aquecedor2021.jar $(PORT)
 
