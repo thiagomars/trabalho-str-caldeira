@@ -115,30 +115,30 @@ void thread_le_sensor (void){ //Le Sensores periodicamente a cada 10ms
 	}		
 }
 
-//aciona alarme na temperatura definida 
+//Aciona alarme após atingir a temperatura definida 
 void thread_alarme (void){
 	
 	while(1){
 		sensor_alarmeT(30); //Definindo a temperatura
-		aloca_tela();
+		aloca_tela();//reserva recurso da tela
 		printf("ALARME, TEMPERATURA LIMITE ATINGIDA !!!\n");
-		libera_tela();
-		sleep(1);
+		libera_tela();//libera os recursos da tela
+		sleep(1);//Notifica a cada 1 segundo
 	
 	}
 		
 }
 
 /*
+// Altera os valores da referência durante a execução 
 void thread_altera_ref (void){
-	
 	while(1){
 		//Criando o menu
 		int aux;
     		double temp, nivel;
 		
 		aloca_tela();
-		
+		system("tput reset"); //limpa tela
 		printf("\n\n ------------------------------------------------- ");
 
 		printf("\n Escolha uma Opcao digitando o numero referente \n");
