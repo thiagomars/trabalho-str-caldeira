@@ -585,5 +585,5 @@ void main( int argc, char *argv[]) {
 	pthread_join(t6, NULL);
 	pthread_join(t7, NULL);	    
 	pthread_join(t8, NULL);
-	pthread_join(t9, NULL);
+	//pthread_join(t9, NULL);
 }
