@@ -234,67 +234,61 @@ void thread_controle_temperatura (void){
 		
 		
 		//A temperatura do recipiente é diferente da referencia?
-			if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira ( Necessário esquentar a água )
-				erro = temperatura_referencia-temperatura;
-				proporcional_erro = ((erro)/temperatura_referencia)*100;
-
-				if(fluxo_entrada > 0){//está entrando agua com temperatura menor
-					
-					atuador_put_aquecedor(proporcional_erro*10000 + fabs(fluxo_entrada*4184*(temp_entrada-temperatura)));
-					if(proporcional_erro>=5){//Aquecer rapidamente
-						atuador_put_fluxo_aquecida(10.0);
-						//atuador_put_saida(0.0);
-					
-					}else{
-						atuador_put_fluxo_aquecida(0.0);
+		if(temperatura_referencia > temperatura){//temperatura de referencia é maior que a temperatura da caldeira ( Necessário esquentar a água )
+			erro = temperatura_referencia-temperatura;
+			proporcional_erro = ((erro)/temperatura_referencia)*100; //Calcula o erro (%) entre a temperatura de referência e a temperatura da caldeira
+			if(fluxo_entrada > 0 && temp_entrada < temperatura_referencia){//está entrando agua com temperatura menor(controle de nivel está atuando no sistema para aumentar o nível)
+				atuador_put_aquecedor(proporcional_erro*10000 + fabs(fluxo_entrada*4184*(temp_entrada-temperatura)));//Aumenta o aquecedor proporcional a vazão e ao erro
+				if(proporcional_erro>=5){ //Caso a temperatura começa a cair bruscamente(erro fique maior que 5%)
+					atuador_put_fluxo_aquecida(10.0);//aciona o fluxo de água quente, ajudando a aumentar o nível 
+				}else{//Caso o erro seja menor que %5
+					atuador_put_fluxo_aquecida(0.0);//desliga o  fluxo de água quente
+					atuador_put_saida(0.0); //Desliga o fluxo de saida
+				}							
+			}else{
+				if(proporcional_erro>=10){//Se o erro for maior que 10%
+					atuador_put_aquecedor(1000000);//Deixa o aquecedor no máximo					
+					atuador_put_fluxo_aquecida(10.0);//liga o fluxo de água quente
+					atuador_put_saida(10.0);//liga a saida com a mesma vasão de entrada quente
+										
+				}else{//após o erro for menor que 10% 
+						atuador_put_aquecedor(proporcional_erro*100000);//Aciona o aquecedor proporcional ao erro
+						atuador_put_fluxo_aquecida(0.0);//Desliga o fluxo de água quente
 						atuador_put_saida(0.0);
-					}
-											
-				}else{
-				
-					if(proporcional_erro>=10){//Aquecer rapidamente
-						atuador_put_aquecedor(1000000);						
-						atuador_put_fluxo_aquecida(10.0);
-						//atuador_put_saida(10.0);
-					
-					}else{
-						atuador_put_aquecedor(proporcional_erro*100000);
-						atuador_put_fluxo_aquecida(0.0);
-						atuador_put_saida(0.0);
-					}
-				}		
-
-			}
-
-			if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
-				atuador_put_aquecedor(0.0);
-				atuador_put_fluxo_aquecida(0.0);
-				
-				if(temp_entrada<temperatura){
-					erro = temperatura - temp_entrada;
-					proporcional_erro = (erro/temperatura)*100;// A vasão é proporcional ao erro da temperatura da caldeira e da temperatura da água que entra
-					if(proporcional_erro>=50){//se a temperatura de referencia for muito baixa em relação a temperatura do tanque
-						atuador_put_entrada(100.0);
-						atuador_put_saida(100.0);
-					}else{
-						atuador_put_entrada(proporcional_erro);
-						atuador_put_saida(proporcional_erro);
-					}
-				}else{
-					atuador_put_entrada(0.0);
-					atuador_put_saida(0.0);
 				}
-				erro = temperatura - temperatura_referencia;
-				
-						
-			}
-			if(erro>= 0 && erro<=0.001){ // estabilizar em relação a temperatura ambiente
-				proporcional_erro = (temperatura - temp_ambiente)/0.001;
-				atuador_put_aquecedor(proporcional_erro);
+			}		
+
+		}
+
+		if(temperatura_referencia < temperatura ){//temperatura de referencia é menor que a temperatura da caldeira ( Necessário esfriar a água )
+			atuador_put_aquecedor(0.0);
+			atuador_put_fluxo_aquecida(0.0);
+			
+			if(temp_entrada<temperatura){
+				erro = temperatura - temp_entrada;
+				proporcional_erro = (erro/temperatura)*100;// A vasão é proporcional ao erro da temperatura da caldeira e da temperatura da água que entra
+				if(proporcional_erro>=0){//se a temperatura de referencia for muito baixa em relação a temperatura do tanque
+					atuador_put_entrada(100.0);
+					atuador_put_saida(100.0);
+				}else{
+					atuador_put_entrada(proporcional_erro);
+					atuador_put_saida(proporcional_erro);
+				}
+			}else{
 				atuador_put_entrada(0.0);
 				atuador_put_saida(0.0);
-				atuador_put_fluxo_aquecida(0.0);
 			}
+			erro = temperatura - temperatura_referencia;
+			
+		}
+		
+		if(erro>= 0 && erro<=0.001){ // estabilizar em relação a temperatura ambiente
+			proporcional_erro = (temperatura - temp_ambiente)/0.001;
+			atuador_put_aquecedor(proporcional_erro);
+			atuador_put_entrada(0.0);
+			atuador_put_saida(0.0);
+			atuador_put_fluxo_aquecida(0.0);
+		}
 			
 			//Lê a hora atual do relógio
     		clock_gettime(CLOCK_MONOTONIC, &t_fim);
