@@ -261,13 +261,7 @@ void thread_controle_temperatura (void){
 				atuador_put_fluxo_aquecida(0.0);
 			}
 			
-			
-		
-
-
-
-
-		// 
+			//Lê a hora atual do relógio
     		clock_gettime(CLOCK_MONOTONIC, &t_fim);
 
     		// calcula o tempo de resposta desda leitura dos sensores até mandar a msg via socket

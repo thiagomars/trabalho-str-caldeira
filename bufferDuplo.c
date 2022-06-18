@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define TAMBUF 100 
+#define TAMBUF 200 
 
 //vetor com o tamanho de Buffer definido acima
 static long buffer_0[TAMBUF]; 
