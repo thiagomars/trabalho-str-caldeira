@@ -10,7 +10,7 @@
 \title{Controle e supervisão de um sistema de caldeira simulado}
 
 %Nomes dos autores
-\author{José Matheus Soares Ferreira 1~Jonatas Mendinça de Vasconcelos Brito 2~Thiago Marques Sousa 3~Daniel Alan Masquita de Vasconcelos4% <-this % stops a space
+\author{José Matheus Soares Ferreira 1~Jonatas Mendinça de Vasconcelos Brito 2~Thiago Marques Sousa 3~Daniel Alan Masquita de Vasconcelos~4% <-this % stops a space
 \thanks{A. 1, Universidade Federal do Ceará, Sobral, Brasil, matrícula:412564}% <-this % stops a space
 \thanks{A. 2, Universidade Federal do Ceará, Sobral, Brasil, matrícula:422569}% <-this % stops a space
 \thanks{A. 3, Universidade Federal do Ceará, Sobral, Brasil, matrícula:412645}% <-this % stops a space
@@ -28,28 +28,30 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-Escreva um breve resumo sobre o trabalho...
+Tanques são projetados para controlar e supervisionar processos industrias, afim de manter parâmetros com temperatura e nível controlados para a geração de um produto ou subproduto. Nesses casos, o controle deve ocorre em tempo real por meio da captação de sensores e pela ação de atuadores. Surgindo requisitos temporais, é desenvolvido um softwares em tempo real com um sistemas computacional capaz de compreender tais requisitos. Nele, o controle da temperatura no interior da caldeira deve se limitar a temperatura de referência definida pelo usuário e o controle de nível a altura pré estabelecida. Ambos os controles utilizam-se de parâmetros como fluxo, temperatura e altura, captados por sensores com periodicidade definidos.   
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-Caldeira, controle de sistema, software em tempo real.
+Caldeira, controle de sistema, software em tempo real, mutex, sincronização e comunicação entre tarefas, seção crítica.
 \end{IEEEkeywords}
 
 \IEEEpeerreviewmaketitle
 
 \section{Introdução}
 
+\IEEEPARstart{s}{oftware} em tempo real, pode ser entendido como sistemas computacionais com requisitos de tempo real, sendo uma categoria especial de sistema operacionais. Essa técnica, aplica-se a problemas que exijam requisitos com funcionalidades de natureza temporal não triviais, nesse sentido é essencial a confiabilidade no tempo de execução da tarefa e compatibilidade com prazos e requisitos definidos, ocasionando em resultados corretos logicamente e temporalmente\cite{IEEEhowto:romulo}.
 
-\IEEEPARstart{s}{oftware} em tempo real, pode ser entendido como sistemas computacionais com requisitos de tempo real, sendo uma categoria especial de sistema operacionais. Essa técnica, aplica-se a problemas que exijam requisitos com funcionalidades de natureza temporal não triviais, nesse sentido é essencial a confiabilidade no tempo de execução da tarefa e compatibilidade com prazos e requisitos definidos, ocasionando em resultados corretos logicamente e temporalmente.\cite{IEEEhowto:romulo}
+Para os requisitos temporais, é necessário destacar que estão diretamente acoplados ao meio, no sentido de estarem fortemente associados com o mundo físico e que por isso a extração dos requisitos devem ocorrer na perspectiva do sistema responder ao estímulos do ambiente. Destacam-se os seguintes requisitos temporais:  periodicidade, o Deadline, Atualidade ou frescor dos dados e a simultaneidade dos dados\cite{IEEEhowto:romulo}.
 
-Para os requisitos temporais, é necessário destacar que estão diretamente acoplados ao meio, no sentido de estarem fortemente associados com o mundo físico e que por isso a extração dos requisitos devem ocorrer na perspectiva do sistema responder ao estímulos do ambiente. Destacam-se os seguintes requisitos temporais:  periodicidade, o Deadline, Atualidade ou frescor dos dados e a simultaneidade dos dados.\cite{IEEEhowto:romulo}
-
-Na aplicação de softwares de tempo real, a sincronização e a comunicação entre tarefas pode ocasionar inconsistência de dados e inversões de prioridades entre tarefas caso seja mal implementado. Para os trechos do código onde a tarefa acessa algum recurso compartilhado entre várias tarefas, é necessário definir uma seção crítica. Para evitar a inconsistência dos dados é usado o mecanismos do Mutex, "técnica de sincronização que possibilita assegurar o acesso exclusivo (leitura e escrita) a um recurso compartilhado por duas ou mais entidades"\cite{IEEEhowto:Borges}, evitando que duas tarefas acessem ao mesmo tempo o memória. 
+Na aplicação de softwares de tempo real, a sincronização e a comunicação entre tarefas pode ocasionar inconsistência de dados e inversões de prioridades entre tarefas caso seja mal implementado. Para os trechos do código onde a tarefa acessa algum recurso compartilhado entre várias tarefas, é necessário definir uma seção crítica. Para evitar a inconsistência dos dados é usado o mecanismos do Mutex, "Técnica de sincronização que possibilita assegurar o acesso exclusivo (leitura e escrita) a um recurso compartilhado por duas ou mais entidades" \cite{IEEEhowto:Borges}, evitando que duas tarefas acessem ao mesmo tempo o memória. 
 
 Nesse sentido, para acessar recursos compartilhados por outras tarefas é necessário definir mecanismos de sincronização para controlar o acesso de recursos e garantir que todos as tarefas possam executar suas seções críticas sem interferir com as seções críticas das outras tarefas.
 
-A idéia do monitor é tornar determinados recursos privativo as tarefas \cite{IEEEhowto:romulo}.
+Para programas concorrentes o problema da seção crítica é mais frequente, mas também existem  situações onde é necessário sincronizar tarefas que colaborem atráves de variáveis compartilhadas, nesses casos, usar apenas a exclusão mutua e Mutex pode gerar mais problemas. Portanto, é necessário definir outros padrões de sincronização como o semáforo e o monitor que são padrões para a programação concorrente com variáveis compartilhadas entre tarefas.
+
+Dessa maneira, os monitores são módulos onde as interações entre tarefas acontecem. Para os monitores, a idéia é tornar determinados recursos privativo as tarefas \cite{IEEEhowto:romulo}. Nesse sentido, o monitor tenta quebrar o programa e recursos em módulos são acessado as tarefas. 
+
 \section{Metodologia}
 
 Apresente como o trabalho foi realizado, falando da Parte I e II da descrição. 
