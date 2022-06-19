@@ -28,9 +28,11 @@
 //Definindo Variáveis necessárias para as medições de tempo
 #define	NSEC_PER_SEC    (1000000000) 	// Numero de nanosegundos em um segundo
 #define	N_AMOSTRAS	10000		// Numero de amostras (medições) coletadas
+#define NUM_THREADS	6
 long temp_exec[N_AMOSTRAS];		// Medicoes do tempo de execução da tarefa em microsegundos
 double valores_altura[N_AMOSTRAS];
 double valores_temperatura[N_AMOSTRAS];
+
 
 //Thread que exibe os valores do Nível e Temperaturas na tela
 #define NSEC_PER_SEC (1000000000)
@@ -485,14 +487,19 @@ struct timespec t;
 
 
 void main( int argc, char *argv[]) {
+	
+	cria_socket(argv[1], atoi(argv[2]) ); //cria o canal de comunicação entre o simulador
+	
 	//estruturas e váriaveis para marcar o tempo no relógio
 	struct timespec t, t_inicio, t_fim;
 	int amostra = 0;		// Amostra corrente
 	int periodo = 100000000; 	// 100ms
-
+	int i = 0;
+	int ord_prio[NUM_THREADS] = [1, 67, 1, 99, 99, 1];
+	pthread_attr_t pthread_custom_attr[NUM_THREADS];
+	struct sched_param priority_param[NUM_THREADS]; 
    
-    	cria_socket(argv[1], atoi(argv[2]) ); //cria o canal de comunicação entre o simulador
-	
+    	
 
 	int aux;
     	double temp, nivel;
@@ -563,23 +570,27 @@ void main( int argc, char *argv[]) {
 	put_refNivel(nivel);
 
 
-	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
-    	//serão definidos 5 threads
-    	pthread_create(&t1, NULL, (void *) thread_mostra_status, NULL);
-    	pthread_create(&t2, NULL, (void *) thread_le_sensor, NULL);
-    	pthread_create(&t3, NULL, (void *) thread_alarme, NULL);
-    	pthread_create(&t4, NULL, (void *) thread_controle_temperatura, NULL);
-   	pthread_create(&t5, NULL, (void *) thread_grava_temp_resp, NULL);
-	pthread_create(&t8, NULL, (void *) thread_controle_nivel, NULL);
-	//pthread_create(&t9, NULL, (void *) thread_altera_ref, NULL);
-    
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
-	pthread_join( t3, NULL);
-	pthread_join( t4, NULL);
-	pthread_join(t5, NULL);
-	pthread_join(t6, NULL);
-	pthread_join(t7, NULL);	    
-	pthread_join(t8, NULL);
-	//pthread_join(t9, NULL);
+	//Configura escalonador do sistema
+	for(int i=0;i<NUM_THREADS;i++){
+		pthread_attr_init(&pthread_custom_attr[i]);
+		pthread_attr_setscope(&pthread_custom_attr[i], PTHREAD_SCOPE_SYSTEM);
+		pthread_attr_setinheritsched(&pthread_custom_attr[i], PTHREAD_EXPLICIT_SCHED);
+		pthread_attr_setschedpolicy(&pthread_custom_attr[i], SCHED_FIFO);
+		priority_param[i].sched_priority = ord_prio[i];
+		if (pthread_attr_setschedparam(&pthread_custom_attr[i], &priority_param[i])!=0)
+	  		fprintf(stderr,"pthread_attr_setschedparam failed\n");
+	}
+
+	pthread_create(&threads[0], &pthread_custom_attr[0], (void *) thread_mostra_status, NULL);
+	pthread_create(&threads[1], &pthread_custom_attr[1], (void *) thread_le_sensor, NULL);
+	pthread_create(&threads[2], &pthread_custom_attr[2], (void *) thread_alarme, NULL);
+	pthread_create(&threads[3], &pthread_custom_attr[3], (void *) thread_controle_temperatura, NULL);
+	pthread_create(&threads[4], &pthread_custom_attr[4], (void *) thread_controle_nivel, NULL);
+	pthread_create(&threads[5], &pthread_custom_attr[5], (void *) thread_grava_temp_resp, NULL);
+
+	for(int i=0;i<NUM_THREADS;i++){
+		pthread_join( threads[i], NULL);
+
+	};
+
 }
