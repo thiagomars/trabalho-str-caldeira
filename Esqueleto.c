@@ -563,8 +563,8 @@ void main( int argc, char *argv[]) {
 	libera_tela();
 	
 	
-	put_refTemp(30.0);
-	put_refNivel(3.0);
+	put_refTemp(temp);
+	put_refNivel(nivel);
 
 
 	pthread_t t1, t2, t3, t4, t5, t6, t7, t8, t9;
