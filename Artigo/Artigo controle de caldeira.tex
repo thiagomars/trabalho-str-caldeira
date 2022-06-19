@@ -54,6 +54,12 @@ Dessa maneira, os monitores são módulos onde as interações entre tarefas aco
 
 \section{Metodologia}
 
+O método de sincronização e comunicação entre as tarefas propostas nesse trabalho é definido por meio do recurso de variáveis compartilhadas, portanto, definiu-se um sistema baseado em tarefas que realiza comunicação através de variáveis globais compartilhadas.
+
+Nesse sentido, o trabalho basea-se em tarefas que são implementadas como thread de um mesmo processo, ou seja, o sistema é baseado em tarefas que são vistas pelo sistema operacional como thread.
+
+Além disso,  é criado variáveis globais que são acessadas por várias tarefas (thread), permitindo diretamente a troca de dados. Dessa maneira, todas as threads automaticamente compartilham as variáveis globias do programa e as variáveis locais pertencentes a cada thread são tipicamente alocadas na  sua respectiva pilha, ou seja, são privadas. 
+
 Apresente como o trabalho foi realizado, falando da Parte I e II da descrição. 
 
 Use diagrama de blocos se possível para indicar as etapas realizadas no trabalho.
