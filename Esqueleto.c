@@ -282,11 +282,13 @@ void thread_controle_temperatura (void){
 		}
 		
 		if(erro>= 0 && erro<=0.001){ // estabilizar em relação a temperatura ambiente
-			proporcional_erro = (temperatura - temp_ambiente)/0.001;
-			atuador_put_aquecedor(proporcional_erro);
 			atuador_put_entrada(0.0);
 			atuador_put_saida(0.0);
 			atuador_put_fluxo_aquecida(0.0);
+			if(temp_ambiente <= temperatura){
+				proporcional_erro = (temperatura - temp_ambiente)/0.001;
+				atuador_put_aquecedor(proporcional_erro);
+			}
 		}
 			
 			//Lê a hora atual do relógio
