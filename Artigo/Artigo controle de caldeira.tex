@@ -60,6 +60,8 @@ Nesse sentido, o trabalho basea-se em tarefas que são implementadas como thread
 
 Além disso,  é criado variáveis globais que são acessadas por várias tarefas (thread), permitindo diretamente a troca de dados. Dessa maneira, todas as threads automaticamente compartilham as variáveis globias do programa e as variáveis locais pertencentes a cada thread são tipicamente alocadas na  sua respectiva pilha, ou seja, são privadas. 
 
+Afim de reduzir problemas tipicamente do método de sincronização e comunicação entre tarefas, como é o caso da inconsistência de dados, é garantindo que as threads acessem  variáveis compartilhadas executando sua seção crítica sem interferir com as seções críticas das outras threads. Para tanto, é utilizado o recurso do mutex, produzindo uma exclusão mútua, para evitar que várias tarefas acessem ao mesmo tempo uma variável. Bem como, o mecanismo de monitores que tenta quebrar os recursos em módulos, ao incapsular as variáveis globais, e a interação de acesso a esses recursos ocorre por meio da chamada de funções. 
+
 Apresente como o trabalho foi realizado, falando da Parte I e II da descrição. 
 
 Use diagrama de blocos se possível para indicar as etapas realizadas no trabalho.
