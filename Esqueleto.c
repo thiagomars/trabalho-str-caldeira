@@ -496,6 +496,7 @@ void main( int argc, char *argv[]) {
 	int periodo = 100000000; 	// 100ms
 	int i = 0;
 	int ord_prio[NUM_THREADS] = [1, 67, 1, 99, 99, 1];
+	pthread_t threads[NUM_THREADS];
 	pthread_attr_t pthread_custom_attr[NUM_THREADS];
 	struct sched_param priority_param[NUM_THREADS]; 
    
