@@ -245,7 +245,7 @@ void thread_controle_temperatura (void){
 					atuador_put_saida(0.0); //Desliga o fluxo de saida
 				}							
 			}else{
-				if(proporcional_erro>=10){//Se o erro for maior que 10%
+				if(proporcional_erro>=5){//Se o erro for maior que 5%
 					atuador_put_aquecedor(1000000);//Deixa o aquecedor no máximo					
 					atuador_put_fluxo_aquecida(10.0);//liga o fluxo de água quente
 					atuador_put_saida(10.0);//liga a saida com a mesma vasão de entrada quente
@@ -461,8 +461,6 @@ struct timespec t;
                 		atu_nf = 0;
 			}
                 }
-		
-		
 		// enviar os valores para os atuadores
 		
 		// atuador do aquecedor
@@ -476,9 +474,6 @@ struct timespec t;
 
 		// atuador de saída de agua do esgoto controlado
 		atuador_put_saida(atu_nf);
-
-		//printf("Passou um periodo !\n");	
-
 		// Calcula inicio do proximo periodo
 		t.tv_nsec += periodo;
 		while (t.tv_nsec >= NSEC_PER_SEC) {
@@ -486,7 +481,6 @@ struct timespec t;
 			t.tv_sec++;
 		}
 	}
-	
 }
 
 
