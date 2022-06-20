@@ -240,14 +240,14 @@ void thread_controle_temperatura (void){
 			proporcional_erro = ((erro)/temperatura_referencia)*100; //Calcula o erro (%) entre a temperatura de referência e a temperatura da caldeira
 			if(fluxo_entrada > 0 && temp_entrada < temperatura_referencia){//está entrando agua com temperatura menor(controle de nivel está atuando no sistema para aumentar o nível)
 				atuador_put_aquecedor(proporcional_erro*10000 + fabs(fluxo_entrada*4184*(temp_entrada-temperatura)));//Aumenta o aquecedor proporcional a vazão e ao erro
-				if(proporcional_erro>=5){ //Caso a temperatura começa a cair bruscamente(erro fique maior que 5%)
+				if(proporcional_erro>=0.5){ //Caso a temperatura começa a cair bruscamente(erro fique maior que 5%)
 					atuador_put_fluxo_aquecida(10.0);//aciona o fluxo de água quente, ajudando a aumentar o nível 
 				}else{//Caso o erro seja menor que %5
 					atuador_put_fluxo_aquecida(0.0);//desliga o fluxo de água quente
 					atuador_put_saida(0.0); //Desliga o fluxo de saida
 				}							
 			}else{
-				if(proporcional_erro>=5){//Se o erro for maior que 5%
+				if(proporcional_erro>=0.5){//Se o erro for maior que 5%
 					atuador_put_aquecedor(1000000);//Deixa o aquecedor no máximo					
 					atuador_put_fluxo_aquecida(10.0);//liga o fluxo de água quente
 					atuador_put_saida(10.0);//liga a saida com a mesma vasão de entrada quente
@@ -296,8 +296,8 @@ void thread_controle_temperatura (void){
 			//Lê a hora atual do relógio
     		clock_gettime(CLOCK_MONOTONIC, &t_fim);
 
-    		// calcula o tempo de resposta desda leitura dos sensores até mandar a msg via socket
-    		temp_resp = 1000000 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 10000;
+    		// calcula o tempo de resposta desda leitura dos sensores até mandar a msg via socket micro
+    		temp_resp = 1e6 * (t_fim.tv_sec - t.tv_sec) + (t_fim.tv_nsec - t.tv_nsec) / 1e3;
 
     		bufduplo_insereLeitura(temp_resp);
 
@@ -450,12 +450,12 @@ struct timespec t;
                 		atu_q = 0;
                 		atu_ni = 0;
                 		atu_na = 0;
-                		atu_nf = 10;
+                		atu_nf = 0;
 			} else if(temp_ref > sensor_get_temperatura()){ //temperatura baixa
-				atu_q = 100;
+				atu_q = 0;
                 		atu_ni = 0;
                 		atu_na = 1;
-                		atu_nf = 10;
+                		atu_nf = 0;
 			} else if(temp_ref == sensor_get_temperatura()){ //temperatura ideal
 				atu_q = 0;
                 		atu_ni = 0;
